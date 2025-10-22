@@ -92,6 +92,7 @@ class TeamManager {
         this.setupDragAndDrop();
         this.setupTacticalMode();
         this.setupSchemeManagement();
+        this.setupRoleToggle();
         // Load and render players on initialization
         this.renderPlayerPool();
     }
@@ -111,6 +112,7 @@ class TeamManager {
     setupDragAndDrop() {
         const field = document.getElementById('footballField');
         const fieldContainer = document.getElementById('field-container') || document.querySelector('.field-container');
+        const playerPool = document.getElementById('playerPool');
         
         // Setup drag and drop for the football field
         field.addEventListener('dragover', (e) => {
@@ -153,6 +155,28 @@ class TeamManager {
                 this.handleFieldContainerDrop(e);
             });
         }
+
+        // Setup drag and drop for the player pool (to return cards from field)
+        if (playerPool) {
+            playerPool.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                // Add visual feedback for valid drop zone
+                playerPool.classList.add('drag-over');
+            });
+
+            playerPool.addEventListener('dragleave', (e) => {
+                // Remove visual feedback when leaving drop zone
+                if (!playerPool.contains(e.relatedTarget)) {
+                    playerPool.classList.remove('drag-over');
+                }
+            });
+
+            playerPool.addEventListener('drop', (e) => {
+                e.preventDefault();
+                playerPool.classList.remove('drag-over');
+                this.handlePlayerPoolDrop(e);
+            });
+        }
     }
 
     handleFieldContainerDrop(e) {
@@ -161,13 +185,33 @@ class TeamManager {
         const fieldContainer = document.querySelector('.field-container');
         const fieldContainerRect = fieldContainer.getBoundingClientRect();
         
-        // Use the stored drag offset for precise positioning
-        const x = e.clientX - fieldContainerRect.left - this.dragOffset.x;
-        const y = e.clientY - fieldContainerRect.top - this.dragOffset.y;
+        // Get the actual field element to check if we're dropping inside it
+        const field = document.getElementById('footballField');
+        const fieldRect = field.getBoundingClientRect();
+        
+        // Check if the drop is actually inside the field area
+        const isInsideField = (
+            e.clientX >= fieldRect.left && 
+            e.clientX <= fieldRect.right && 
+            e.clientY >= fieldRect.top && 
+            e.clientY <= fieldRect.bottom
+        );
+        
+        // If dropping inside the field, delegate to field drop handler
+        if (isInsideField) {
+            this.handleFieldDrop(e);
+            return;
+        }
+
+        // Calculate position based on mouse coordinates, centering the card under the cursor
+        const cardWidth = 120;
+        const cardHeight = 160;
+        
+        // Center the card under the mouse cursor
+        const x = e.clientX - fieldContainerRect.left - (cardWidth / 2);
+        const y = e.clientY - fieldContainerRect.top - (cardHeight / 2);
 
         // Ensure the card stays within field container boundaries
-        const cardWidth = 80;
-        const cardHeight = 80;
         const boundedX = Math.max(0, Math.min(x, fieldContainerRect.width - cardWidth));
         const boundedY = Math.max(0, Math.min(y, fieldContainerRect.height - cardHeight));
 
@@ -222,8 +266,8 @@ class TeamManager {
         const y = e.clientY - fieldRect.top - this.dragOffset.y;
 
         // Ensure the card stays within field boundaries
-        const cardWidth = 80;
-        const cardHeight = 80;
+        const cardWidth = 120; // Updated to match actual card width
+        const cardHeight = 160; // Updated to match actual card height
         const boundedX = Math.max(0, Math.min(x, fieldRect.width - cardWidth));
         const boundedY = Math.max(0, Math.min(y, fieldRect.height - cardHeight));
 
@@ -236,6 +280,12 @@ class TeamManager {
             this.draggedPlayer = null;
             this.dragOffset = null;
             return;
+        }
+
+        // Remove from field container if it exists there
+        const existingContainerCard = document.querySelector(`.field-container [data-player-id="${this.draggedPlayer.id}"]`);
+        if (existingContainerCard) {
+            existingContainerCard.remove();
         }
 
         // Create field card
@@ -276,12 +326,39 @@ class TeamManager {
         this.renderPlayerPool();
     }
 
+    handlePlayerPoolDrop(e) {
+        if (!this.draggedPlayer || !this.dragOffset) return;
+
+        // Check if the dragged player is from the field or field container
+        const fieldCard = document.querySelector(`#footballField [data-player-id="${this.draggedPlayer.id}"]`);
+        const containerCard = document.querySelector(`.field-container [data-player-id="${this.draggedPlayer.id}"]`);
+        
+        if (fieldCard) {
+            // Return player from field to pool
+            this.returnPlayerToPool(fieldCard);
+        } else if (containerCard) {
+            // Return player from field container to pool
+            this.returnPlayerToPool(containerCard);
+        }
+
+        this.draggedPlayer = null;
+        this.dragOffset = null;
+    }
+
     clearField() {
         if (confirm('Sei sicuro di voler rimuovere tutti i giocatori dal campo? Verranno spostati nel Player Pool.')) {
             const field = document.getElementById('footballField');
+            const fieldContainer = document.querySelector('.field-container');
+            
+            // Remove players from the football field
             const playersOnField = field.querySelectorAll('.player-card');
-
             playersOnField.forEach(card => {
+                card.remove();
+            });
+
+            // Remove players from the field container (gray area)
+            const playersInContainer = fieldContainer.querySelectorAll('.player-card');
+            playersInContainer.forEach(card => {
                 card.remove();
             });
 
@@ -500,6 +577,9 @@ class TeamManager {
         // Add position class to the card for role-based styling
         card.classList.add(positionClass);
 
+        // Check if roles should be hidden
+        const hiddenRoleClass = this.rolesVisible ? '' : ' hidden-role';
+
         card.innerHTML = `
             <div class="player-card-header">
                 <div class="player-name-large" title="${player.name}">${displayName}</div>
@@ -509,7 +589,7 @@ class TeamManager {
             </div>` : `<div class="team-logo">
                 <i class="fas fa-shield-alt"></i>
             </div>`}
-            <div class="position-badge ${positionClass}">
+            <div class="position-badge ${positionClass}${hiddenRoleClass}">
                 ${positionDisplay}
             </div>
         `;
@@ -829,9 +909,9 @@ class TeamManager {
             });
         }
 
-        // Delete key functionality
+        // Delete key functionality (Delete and Backspace)
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Delete' && selectedElement && tacticalMode) {
+            if ((e.key === 'Delete' || e.key === 'Backspace') && selectedElement && tacticalMode) {
                 selectedElement.remove();
                 selectedElement = null;
                 this.saveToHistory(tacticalCanvas);
@@ -971,9 +1051,10 @@ class TeamManager {
                 line.setAttribute('stroke-width', strokeWidth);
                 element.appendChild(line);
                 
-                // Arrow head
+                // Arrow head - scale with stroke width
                 const angle = Math.atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x);
-                const arrowLength = 10;
+                const strokeWidthNum = parseFloat(strokeWidth);
+                const arrowLength = Math.max(10, strokeWidthNum * 3); // Scale arrow length with stroke width
                 const arrowAngle = Math.PI / 6;
                 
                 const arrowHead = document.createElementNS(svgNS, 'polygon');
@@ -984,6 +1065,9 @@ class TeamManager {
                 
                 arrowHead.setAttribute('points', `${endPoint.x},${endPoint.y} ${x1},${y1} ${x2},${y2}`);
                 arrowHead.setAttribute('fill', strokeColor);
+                arrowHead.setAttribute('stroke', strokeColor);
+                arrowHead.setAttribute('stroke-width', Math.max(1, strokeWidthNum * 0.5)); // Add stroke to arrow head
+                arrowHead.setAttribute('stroke-linejoin', 'round'); // Smooth joins
                 element.appendChild(arrowHead);
                 break;
                 
@@ -1136,6 +1220,113 @@ class TeamManager {
     setupSchemeManagement() {
         // Scheme management functionality will be implemented here
         console.log('Scheme management setup completed');
+    }
+
+    // Setup Role Toggle functionality
+    setupRoleToggle() {
+        const roleToggleBtn = document.getElementById('roleToggleBtn');
+        if (!roleToggleBtn) {
+            console.error('Role toggle button not found');
+            return;
+        }
+
+        // Initialize state from localStorage or default to true (ON)
+        const savedState = localStorage.getItem('roleToggleState');
+        this.rolesVisible = savedState !== null ? JSON.parse(savedState) : true;
+        
+        // Set initial button state
+        this.updateRoleToggleButton();
+        this.toggleRoleVisibility(this.rolesVisible);
+
+        // Add click event listener
+        roleToggleBtn.addEventListener('click', () => {
+            this.rolesVisible = !this.rolesVisible;
+            this.updateRoleToggleButton();
+            this.toggleRoleVisibility(this.rolesVisible);
+            
+            // Save state to localStorage
+            localStorage.setItem('roleToggleState', JSON.stringify(this.rolesVisible));
+            
+            // Show feedback notification
+            this.showRoleToggleNotification();
+        });
+
+        console.log('Role toggle setup completed');
+    }
+
+    // Update the visual state of the toggle button
+    updateRoleToggleButton() {
+        const roleToggleBtn = document.getElementById('roleToggleBtn');
+        const toggleText = roleToggleBtn.querySelector('.toggle-text');
+        const icon = roleToggleBtn.querySelector('.fas');
+
+        if (this.rolesVisible) {
+            roleToggleBtn.classList.remove('off');
+            toggleText.textContent = 'ON';
+            icon.className = 'fas fa-eye';
+            roleToggleBtn.title = 'Clicca per nascondere i ruoli dei giocatori';
+        } else {
+            roleToggleBtn.classList.add('off');
+            toggleText.textContent = 'OFF';
+            icon.className = 'fas fa-eye-slash';
+            roleToggleBtn.title = 'Clicca per mostrare i ruoli dei giocatori';
+        }
+    }
+
+    // Toggle visibility of all position badges
+    toggleRoleVisibility(visible) {
+        const positionBadges = document.querySelectorAll('.position-badge');
+        
+        positionBadges.forEach(badge => {
+            if (visible) {
+                badge.classList.remove('hidden-role');
+            } else {
+                badge.classList.add('hidden-role');
+            }
+        });
+    }
+
+    // Show notification when toggle state changes
+    showRoleToggleNotification() {
+        const message = this.rolesVisible ? 
+            'Ruoli dei giocatori mostrati' : 
+            'Ruoli dei giocatori nascosti';
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'role-toggle-notification';
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${this.rolesVisible ? '#10b981' : '#ef4444'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+
+        // Animate out and remove
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 2000);
     }
 
     // Export field as PNG

@@ -109,6 +109,15 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
+      "id": "player_146",
+      "name": "Girgi",
+      "position": "DIFENSORE",
+      "squad": "alpak",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
       "id": "player_013",
       "name": "Garilli",
       "position": "DIFENSORE",
@@ -651,7 +660,7 @@
     {
       "id": 73,
       "name": "Vagge",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -660,7 +669,7 @@
     {
       "id": 74,
       "name": "Borges",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -669,7 +678,7 @@
     {
       "id": 75,
       "name": "Muscas",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -678,7 +687,7 @@
     {
       "id": 76,
       "name": "Di Dio",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -687,7 +696,7 @@
     {
       "id": 77,
       "name": "Zefi",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -696,7 +705,7 @@
     {
       "id": 78,
       "name": "Filippi",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -705,7 +714,7 @@
     {
       "id": 79,
       "name": "Pagliaro",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -714,7 +723,7 @@
     {
       "id": 80,
       "name": "Turati",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -723,7 +732,7 @@
     {
       "id": 81,
       "name": "Bezziccheri",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "trm fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -732,7 +741,7 @@
     {
       "id": 82,
       "name": "Tropea",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "trm fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -741,7 +750,7 @@
     {
       "id": 83,
       "name": "Scienza",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "trm fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -750,7 +759,7 @@
     {
       "id": 84,
       "name": "Vono",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "trm fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -759,7 +768,7 @@
     {
       "id": 85,
       "name": "Buono",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -768,7 +777,7 @@
     {
       "id": 86,
       "name": "Ambrosio",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -777,7 +786,7 @@
     {
       "id": 87,
       "name": "Montagna",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -786,7 +795,7 @@
     {
       "id": 88,
       "name": "Manzoni",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -795,7 +804,7 @@
     {
       "id": 89,
       "name": "El Hilali",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -804,7 +813,7 @@
     {
       "id": 90,
       "name": "Cartella",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -813,7 +822,7 @@
     {
       "id": 91,
       "name": "Di Mauro",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -822,7 +831,7 @@
     {
       "id": 92,
       "name": "Gallizia",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -831,7 +840,7 @@
     {
       "id": 93,
       "name": "Maddalena",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -840,7 +849,7 @@
     {
       "id": 94,
       "name": "Salvatore",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "fc zeta",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -849,7 +858,7 @@
     {
       "id": 95,
       "name": "Marinaro",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "fc zeta",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -858,7 +867,7 @@
     {
       "id": 96,
       "name": "Iocolano",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -867,7 +876,7 @@
     {
       "id": 97,
       "name": "El Hilali",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "fc zeta",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -876,7 +885,7 @@
     {
       "id": 98,
       "name": "Feleppa",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -885,7 +894,7 @@
     {
       "id": 99,
       "name": "Mancuso",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -894,7 +903,7 @@
     {
       "id": 100,
       "name": "Ciceri",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -903,7 +912,7 @@
     {
       "id": 101,
       "name": "Prinari",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -912,7 +921,7 @@
     {
       "id": 102,
       "name": "Donzelli",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -921,7 +930,7 @@
     {
       "id": 103,
       "name": "Mancosu",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -930,7 +939,7 @@
     {
       "id": 104,
       "name": "de la Cruz",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -939,7 +948,7 @@
     {
       "id": 105,
       "name": "Folla",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -948,7 +957,7 @@
     {
       "id": 106,
       "name": "Cosenza",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "gear 7",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -957,7 +966,7 @@
     {
       "id": 107,
       "name": "Chironi",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "gear 7",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -966,7 +975,7 @@
     {
       "id": 108,
       "name": "Hernández",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "gear 7",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -975,7 +984,7 @@
     {
       "id": 109,
       "name": "Sau",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "gear 7",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -984,7 +993,7 @@
     {
       "id": 110,
       "name": "Guddo",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -993,7 +1002,7 @@
     {
       "id": 111,
       "name": "Adamo",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1002,7 +1011,7 @@
     {
       "id": 112,
       "name": "Proietti",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1011,7 +1020,7 @@
     {
       "id": 113,
       "name": "Pannuti",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1020,7 +1029,7 @@
     {
       "id": 114,
       "name": "Beniti",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1029,7 +1038,7 @@
     {
       "id": 115,
       "name": "Marino",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1038,7 +1047,7 @@
     {
       "id": 116,
       "name": "Brusadelli",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1047,7 +1056,7 @@
     {
       "id": 117,
       "name": "Frosio",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1056,7 +1065,7 @@
     {
       "id": 118,
       "name": "Soldà",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "stallions",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1065,7 +1074,7 @@
     {
       "id": 119,
       "name": "Evangelisti",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "stallions",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1074,7 +1083,7 @@
     {
       "id": 120,
       "name": "Altamura",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "stallions",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1083,7 +1092,7 @@
     {
       "id": 121,
       "name": "Stojkovic",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "stallions",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1092,7 +1101,7 @@
     {
       "id": 122,
       "name": "Calabrò",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1101,7 +1110,7 @@
     {
       "id": 123,
       "name": "Taliento",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1110,7 +1119,7 @@
     {
       "id": 124,
       "name": "Gorgoglione",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1119,7 +1128,7 @@
     {
       "id": 125,
       "name": "Pisan",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1128,7 +1137,7 @@
     {
       "id": 126,
       "name": "Bertaglio",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1137,7 +1146,7 @@
     {
       "id": 127,
       "name": "Cannataro",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1146,7 +1155,7 @@
     {
       "id": 128,
       "name": "Cavalli",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1155,7 +1164,7 @@
     {
       "id": 129,
       "name": "Zito",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1164,7 +1173,7 @@
     {
       "id": 130,
       "name": "Marti",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "underdogs fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1173,7 +1182,7 @@
     {
       "id": 131,
       "name": "Lunghi",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "underdogs fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1182,7 +1191,7 @@
     {
       "id": 132,
       "name": "Rossi",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "underdogs fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1191,7 +1200,7 @@
     {
       "id": 133,
       "name": "Perrotti",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "underdogs fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1200,7 +1209,7 @@
     {
       "id": 134,
       "name": "Travaini",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1209,7 +1218,7 @@
     {
       "id": 135,
       "name": "D'Ippolito",
-      "position": "Portiere",
+      "position": "PORTIERE",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1218,7 +1227,7 @@
     {
       "id": 136,
       "name": "Pelli",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1227,7 +1236,7 @@
     {
       "id": 137,
       "name": "Bonzi",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1236,7 +1245,7 @@
     {
       "id": 138,
       "name": "Baioni",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1245,7 +1254,7 @@
     {
       "id": 139,
       "name": "Maggioni",
-      "position": "Centrocampista",
+      "position": "CENTROCAMPISTA",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1254,7 +1263,7 @@
     {
       "id": 140,
       "name": "Petrola'",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1263,7 +1272,7 @@
     {
       "id": 141,
       "name": "Berra",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1272,7 +1281,7 @@
     {
       "id": 142,
       "name": "Sofia",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "zebras fc",
       "wildcard": false,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1281,7 +1290,7 @@
     {
       "id": 143,
       "name": "Bosco",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "zebras fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1290,7 +1299,7 @@
     {
       "id": 144,
       "name": "Tarasco",
-      "position": "Difensore",
+      "position": "DIFENSORE",
       "squad": "zebras fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1299,7 +1308,7 @@
     {
       "id": 145,
       "name": "Filipi",
-      "position": "Attaccante",
+      "position": "ATTACCANTE",
       "squad": "zebras fc",
       "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
@@ -1309,7 +1318,7 @@
   "metadata": {
     "version": "1.0",
     "last_updated": "2024-12-19T12:00:00Z",
-    "total_players": 145,
+    "total_players": 146,
     "squads": [
       "alpak",
       "bigbro", 

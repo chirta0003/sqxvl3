@@ -640,6 +640,10 @@ body {
     padding-right: 0.5rem;
     padding-left: 20px; /* Add left padding to accommodate negative positioned numbers */
     padding-top: 20px; /* Add top padding to accommodate negative positioned numbers */
+    padding-bottom: 20px; /* Add bottom padding for better spacing */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Add gap between player cards for better spacing */
 }
 
 .player-pool::-webkit-scrollbar {
@@ -659,15 +663,15 @@ body {
 /* Delete Player Button */
 .delete-player-btn {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 20px;
-    height: 20px;
+    top: -10px;
+    right: -10px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: #ff4757;
     border: 2px solid #ffffff;
     color: #ffffff;
-    font-size: 10px;
+    font-size: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -675,6 +679,13 @@ body {
     z-index: 1001;
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.player-card:hover .delete-player-btn {
+    opacity: 1;
+    visibility: visible;
 }
 
 .delete-player-btn:hover {
@@ -684,19 +695,19 @@ body {
 }
 
 .delete-player-btn i {
-    font-size: 8px;
+    font-size: 10px;
 }
 
 /* Player Card - Uniform design with consistent border color and optimized spacing */
 .player-card {
-    width: 100px;
-    height: 170px; /* Increased height to accommodate larger badge */
+    width: 130px;
+    height: 180px; /* Increased height to accommodate larger badge */
     background: 
         radial-gradient(circle at center, #2b004f 0%, #0a0a0a 100%),
         linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
     border-radius: 0.8rem;
     padding: 0.4rem 0.6rem 0.6rem 0.6rem; /* Adjusted top padding */
-    margin-bottom: 0.8rem;
+    margin-bottom: 1.5rem; /* Increased from 0.8rem to 1.5rem for better spacing */
     position: relative;
     cursor: grab;
     transition: all 0.3s ease;
@@ -745,7 +756,7 @@ body {
     text-align: center;
     letter-spacing: 0.5px; /* Subtle letter spacing */
     text-transform: uppercase;
-    margin: 0.2rem 0; /* Adjusted margin */
+    margin: -0.1rem 0 0.2rem 0; /* Moved up by 3px (0.2rem -> -0.1rem) */
     position: relative;
     background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); /* Professional blue gradient */
     border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle white border */
@@ -1078,6 +1089,8 @@ body {
     box-shadow: var(--shadow-medium);
     border: 3px solid #000000;
     overflow: visible;
+    position: relative;
+    z-index: 1;
 }
 
 .field {
@@ -1117,6 +1130,13 @@ body {
     border: 2px dashed var(--primary-color);
     background: rgba(59, 130, 246, 0.1);
     opacity: 1;
+}
+
+/* Player Pool drag-over effect */
+.player-pool.drag-over {
+    border: 2px dashed var(--primary-color);
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 0.5rem;
 }
 
 .zone-label {
@@ -2193,6 +2213,110 @@ body {
     color: white;
 }
 
+/* Role Toggle Button */
+.role-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.role-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.role-toggle-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+/* OFF State */
+.role-toggle-btn.off {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.role-toggle-btn.off:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.role-toggle-btn .fas {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.role-toggle-btn.off .fas {
+    transform: scale(0.9);
+}
+
+.toggle-text {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Ripple effect */
+.role-toggle-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.role-toggle-btn:active::before {
+    width: 100px;
+    height: 100px;
+}
+
+/* Hidden roles state */
+.position-badge.hidden-role {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .role-toggle-btn {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .role-toggle-btn {
+        padding: 0.5rem 0.7rem;
+        font-size: 0.8rem;
+        gap: 0.3rem;
+    }
+    
+    .role-toggle-btn .fas {
+        font-size: 0.9rem;
+    }
+}
+
 /* Animation */
 @keyframes slideInRight {
     from {
@@ -2207,6 +2331,10 @@ body {
 
 /* Utility Classes */
 .hidden {
+    display: none !important;
+}
+
+.hidden-role {
     display: none !important;
 }
 
