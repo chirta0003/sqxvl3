@@ -594,8 +594,8 @@ class TeamManager {
             </div>
         `;
 
-        // Add wildcard star icon if player has wildcard set to "SI"
-        if (player.wildcard === 'SI') {
+        // Add wildcard star icon if player has wildcard set to "SI" or true
+        if (player.wildcard === 'SI' || player.wildcard === true) {
             const wildcardStar = document.createElement('div');
             wildcardStar.className = 'wildcard-star-btn';
             wildcardStar.innerHTML = '<i class="fas fa-star"></i>';

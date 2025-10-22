@@ -19,15 +19,6 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_003",
-      "name": "Geraci",
-      "position": "DIFENSORE",
-      "squad": "alpak",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
       "id": "player_004",
       "name": "Ambari",
       "position": "DIFENSORE",
@@ -39,6 +30,24 @@
     {
       "id": "player_005",
       "name": "Bruzzone",
+      "position": "DIFENSORE",
+      "squad": "alpak",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_003",
+      "name": "Geraci",
+      "position": "DIFENSORE",
+      "squad": "alpak",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_146",
+      "name": "Girgi",
       "position": "DIFENSORE",
       "squad": "alpak",
       "wildcard": "NO",
@@ -64,8 +73,8 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_008",
-      "name": "Massa",
+      "id": "player_009",
+      "name": "Foglia",
       "position": "ATTACCANTE",
       "squad": "alpak",
       "wildcard": "NO",
@@ -73,8 +82,8 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_009",
-      "name": "Foglia",
+      "id": "player_008",
+      "name": "Massa",
       "position": "ATTACCANTE",
       "squad": "alpak",
       "wildcard": "NO",
@@ -109,10 +118,28 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_146",
-      "name": "Girgi",
+      "id": "player_163",
+      "name": "Procida",
+      "position": "PORTIERE",
+      "squad": "bigbro",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_158",
+      "name": "Fofana",
       "position": "DIFENSORE",
-      "squad": "alpak",
+      "squad": "bigbro",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_015",
+      "name": "Frana",
+      "position": "DIFENSORE",
+      "squad": "bigbro",
       "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
@@ -129,15 +156,6 @@
     {
       "id": "player_014",
       "name": "Tuia",
-      "position": "DIFENSORE",
-      "squad": "bigbro",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_015",
-      "name": "Frana",
       "position": "DIFENSORE",
       "squad": "bigbro",
       "wildcard": "NO",
@@ -163,8 +181,17 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_018",
-      "name": "Strada",
+      "id": "player_020",
+      "name": "Matos",
+      "position": "ATTACCANTE",
+      "squad": "bigbro",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_157",
+      "name": "Matos",
       "position": "ATTACCANTE",
       "squad": "bigbro",
       "wildcard": "NO",
@@ -181,8 +208,8 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_020",
-      "name": "Matos",
+      "id": "player_018",
+      "name": "Strada",
       "position": "ATTACCANTE",
       "squad": "bigbro",
       "wildcard": "NO",
@@ -217,15 +244,6 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_024",
-      "name": "Iuliano",
-      "position": "PORTIERE",
-      "squad": "boomers",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
       "id": "player_025",
       "name": "Dario",
       "position": "PORTIERE",
@@ -235,9 +253,9 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_026",
-      "name": "Ferrara",
-      "position": "DIFENSORE",
+      "id": "player_024",
+      "name": "Iuliano",
+      "position": "PORTIERE",
       "squad": "boomers",
       "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
@@ -246,6 +264,15 @@
     {
       "id": "player_027",
       "name": "Capelli",
+      "position": "DIFENSORE",
+      "squad": "boomers",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_026",
+      "name": "Ferrara",
       "position": "DIFENSORE",
       "squad": "boomers",
       "wildcard": "NO",
@@ -289,6 +316,15 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
+      "id": "player_033",
+      "name": "Kalaja",
+      "position": "ATTACCANTE",
+      "squad": "boomers",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
       "id": "player_032",
       "name": "Santoro",
       "position": "ATTACCANTE",
@@ -298,11 +334,11 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_033",
-      "name": "Kalaja",
-      "position": "ATTACCANTE",
+      "id": "player_156",
+      "name": "Piantedosi",
+      "position": "DIFENSORE",
       "squad": "boomers",
-      "wildcard": "NO",
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -329,6 +365,141 @@
       "name": "Lo Faso",
       "position": "ATTACCANTE",
       "squad": "boomers",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_062",
+      "name": "Gili",
+      "position": "PORTIERE",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_061",
+      "name": "Godio",
+      "position": "PORTIERE",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_064",
+      "name": "Davi",
+      "position": "DIFENSORE",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_065",
+      "name": "Ferri",
+      "position": "DIFENSORE",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_063",
+      "name": "Olivera",
+      "position": "DIFENSORE",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_067",
+      "name": "Borin",
+      "position": "CENTROCAMPISTA",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_147",
+      "name": "Corso",
+      "position": "CENTROCAMPISTA",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_066",
+      "name": "Nunes",
+      "position": "CENTROCAMPISTA",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_068",
+      "name": "Zaki",
+      "position": "ATTACCANTE",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_069",
+      "name": "Zullo",
+      "position": "ATTACCANTE",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_148",
+      "name": "Savva",
+      "position": "DIFENSORE",
+      "squad": "caesar",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_070",
+      "name": "Loiodice",
+      "position": "CENTROCAMPISTA",
+      "squad": "caesar",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_071",
+      "name": "Abale",
+      "position": "ATTACCANTE",
+      "squad": "caesar",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_072",
+      "name": "Lagzir",
+      "position": "ATTACCANTE",
+      "squad": "caesar",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_149",
+      "name": "Zunino",
+      "position": "ATTACCANTE",
+      "squad": "caesar",
       "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
@@ -372,6 +543,15 @@
     {
       "id": "player_041",
       "name": "Rossi",
+      "position": "DIFENSORE",
+      "squad": "circus",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_162",
+      "name": "Vacca",
       "position": "DIFENSORE",
       "squad": "circus",
       "wildcard": "NO",
@@ -424,6 +604,33 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
+      "id": "player_161",
+      "name": "Sala",
+      "position": "CENTROCAMPISTA",
+      "squad": "circus",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_048",
+      "name": "Bertocchi",
+      "position": "ATTACCANTE",
+      "squad": "circus",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_160",
+      "name": "Casiraghi",
+      "position": "ATTACCANTE",
+      "squad": "circus",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
       "id": "player_047",
       "name": "Colombo",
       "position": "ATTACCANTE",
@@ -433,8 +640,8 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_048",
-      "name": "Bertocchi",
+      "id": "player_159",
+      "name": "Di Sparti",
       "position": "ATTACCANTE",
       "squad": "circus",
       "wildcard": "SI",
@@ -451,6 +658,15 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
+      "id": "player_051",
+      "name": "Caronte",
+      "position": "DIFENSORE",
+      "squad": "d power",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
       "id": "player_050",
       "name": "Mihaylov",
       "position": "DIFENSORE",
@@ -460,8 +676,8 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_051",
-      "name": "Caronte",
+      "id": "player_153",
+      "name": "Zanotti",
       "position": "DIFENSORE",
       "squad": "d power",
       "wildcard": "NO",
@@ -478,8 +694,26 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
+      "id": "player_055",
+      "name": "El Jadi",
+      "position": "CENTROCAMPISTA",
+      "squad": "d power",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
       "id": "player_053",
       "name": "Marsanasco",
+      "position": "CENTROCAMPISTA",
+      "squad": "d power",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_154",
+      "name": "Scopelliti",
       "position": "CENTROCAMPISTA",
       "squad": "d power",
       "wildcard": "NO",
@@ -496,9 +730,9 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_055",
-      "name": "El Jadi",
-      "position": "CENTROCAMPISTA",
+      "id": "player_057",
+      "name": "Mirarchi",
+      "position": "ATTACCANTE",
       "squad": "d power",
       "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
@@ -514,17 +748,8 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_057",
-      "name": "Mirarchi",
-      "position": "ATTACCANTE",
-      "squad": "d power",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_058",
-      "name": "Marocco",
+      "id": "player_059",
+      "name": "Benedetti",
       "position": "DIFENSORE",
       "squad": "d power",
       "wildcard": "SI",
@@ -532,8 +757,8 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_059",
-      "name": "Benedetti",
+      "id": "player_058",
+      "name": "Marocco",
       "position": "DIFENSORE",
       "squad": "d power",
       "wildcard": "SI",
@@ -550,218 +775,11 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": "player_061",
-      "name": "Godio",
+      "id": 86,
+      "name": "Ambrosio",
       "position": "PORTIERE",
-      "squad": "caesar",
+      "squad": "fc zeta",
       "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_062",
-      "name": "Gili",
-      "position": "PORTIERE",
-      "squad": "caesar",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_063",
-      "name": "Olivera",
-      "position": "DIFENSORE",
-      "squad": "caesar",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_064",
-      "name": "Davi",
-      "position": "DIFENSORE",
-      "squad": "caesar",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_065",
-      "name": "Ferri",
-      "position": "DIFENSORE",
-      "squad": "caesar",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_066",
-      "name": "Nunes",
-      "position": "CENTROCAMPISTA",
-      "squad": "caesar",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_067",
-      "name": "Borin",
-      "position": "CENTROCAMPISTA",
-      "squad": "caesar",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_068",
-      "name": "Zaki",
-      "position": "ATTACCANTE",
-      "squad": "caesar",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_069",
-      "name": "Zullo",
-      "position": "ATTACCANTE",
-      "squad": "caesar",
-      "wildcard": "NO",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_070",
-      "name": "Loiodice",
-      "position": "CENTROCAMPISTA",
-      "squad": "caesar",
-      "wildcard": "SI",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_071",
-      "name": "Abale",
-      "position": "ATTACCANTE",
-      "squad": "caesar",
-      "wildcard": "SI",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": "player_072",
-      "name": "Lagzir",
-      "position": "ATTACCANTE",
-      "squad": "caesar",
-      "wildcard": "SI",
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 73,
-      "name": "Vagge",
-      "position": "PORTIERE",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 74,
-      "name": "Borges",
-      "position": "PORTIERE",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 75,
-      "name": "Muscas",
-      "position": "DIFENSORE",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 76,
-      "name": "Di Dio",
-      "position": "DIFENSORE",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 77,
-      "name": "Zefi",
-      "position": "DIFENSORE",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 78,
-      "name": "Filippi",
-      "position": "DIFENSORE",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 79,
-      "name": "Pagliaro",
-      "position": "CENTROCAMPISTA",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 80,
-      "name": "Turati",
-      "position": "CENTROCAMPISTA",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 81,
-      "name": "Bezziccheri",
-      "position": "ATTACCANTE",
-      "squad": "trm fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 82,
-      "name": "Tropea",
-      "position": "DIFENSORE",
-      "squad": "trm fc",
-      "wildcard": true,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 83,
-      "name": "Scienza",
-      "position": "ATTACCANTE",
-      "squad": "trm fc",
-      "wildcard": true,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 84,
-      "name": "Vono",
-      "position": "ATTACCANTE",
-      "squad": "trm fc",
-      "wildcard": true,
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -770,34 +788,7 @@
       "name": "Buono",
       "position": "PORTIERE",
       "squad": "fc zeta",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 86,
-      "name": "Ambrosio",
-      "position": "PORTIERE",
-      "squad": "fc zeta",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 87,
-      "name": "Montagna",
-      "position": "DIFENSORE",
-      "squad": "fc zeta",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 88,
-      "name": "Manzoni",
-      "position": "DIFENSORE",
-      "squad": "fc zeta",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -806,7 +797,25 @@
       "name": "El Hilali",
       "position": "DIFENSORE",
       "squad": "fc zeta",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 88,
+      "name": "Manzoni",
+      "position": "DIFENSORE",
+      "squad": "fc zeta",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 87,
+      "name": "Montagna",
+      "position": "DIFENSORE",
+      "squad": "fc zeta",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -815,7 +824,7 @@
       "name": "Cartella",
       "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -824,7 +833,7 @@
       "name": "Di Mauro",
       "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -833,7 +842,7 @@
       "name": "Gallizia",
       "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -842,7 +851,16 @@
       "name": "Maddalena",
       "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_155",
+      "name": "Testa",
+      "position": "CENTROCAMPISTA",
+      "squad": "fc zeta",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -851,7 +869,7 @@
       "name": "Salvatore",
       "position": "ATTACCANTE",
       "squad": "fc zeta",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -860,7 +878,7 @@
       "name": "Marinaro",
       "position": "PORTIERE",
       "squad": "fc zeta",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -869,7 +887,7 @@
       "name": "Iocolano",
       "position": "CENTROCAMPISTA",
       "squad": "fc zeta",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -878,7 +896,7 @@
       "name": "El Hilali",
       "position": "ATTACCANTE",
       "squad": "fc zeta",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -887,16 +905,7 @@
       "name": "Feleppa",
       "position": "PORTIERE",
       "squad": "gear 7",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 99,
-      "name": "Mancuso",
-      "position": "DIFENSORE",
-      "squad": "gear 7",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -905,7 +914,16 @@
       "name": "Ciceri",
       "position": "DIFENSORE",
       "squad": "gear 7",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 99,
+      "name": "Mancuso",
+      "position": "DIFENSORE",
+      "squad": "gear 7",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -914,7 +932,7 @@
       "name": "Prinari",
       "position": "DIFENSORE",
       "squad": "gear 7",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -923,7 +941,7 @@
       "name": "Donzelli",
       "position": "CENTROCAMPISTA",
       "squad": "gear 7",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -932,25 +950,7 @@
       "name": "Mancosu",
       "position": "CENTROCAMPISTA",
       "squad": "gear 7",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 104,
-      "name": "de la Cruz",
-      "position": "ATTACCANTE",
-      "squad": "gear 7",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 105,
-      "name": "Folla",
-      "position": "ATTACCANTE",
-      "squad": "gear 7",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -959,7 +959,25 @@
       "name": "Cosenza",
       "position": "ATTACCANTE",
       "squad": "gear 7",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 105,
+      "name": "Folla",
+      "position": "ATTACCANTE",
+      "squad": "gear 7",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 104,
+      "name": "de la Cruz",
+      "position": "ATTACCANTE",
+      "squad": "gear 7",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -968,7 +986,7 @@
       "name": "Chironi",
       "position": "PORTIERE",
       "squad": "gear 7",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -977,7 +995,7 @@
       "name": "Hernández",
       "position": "CENTROCAMPISTA",
       "squad": "gear 7",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -986,7 +1004,7 @@
       "name": "Sau",
       "position": "ATTACCANTE",
       "squad": "gear 7",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -995,7 +1013,7 @@
       "name": "Guddo",
       "position": "PORTIERE",
       "squad": "stallions",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1004,25 +1022,7 @@
       "name": "Adamo",
       "position": "DIFENSORE",
       "squad": "stallions",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 112,
-      "name": "Proietti",
-      "position": "CENTROCAMPISTA",
-      "squad": "stallions",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 113,
-      "name": "Pannuti",
-      "position": "CENTROCAMPISTA",
-      "squad": "stallions",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1031,16 +1031,7 @@
       "name": "Beniti",
       "position": "CENTROCAMPISTA",
       "squad": "stallions",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 115,
-      "name": "Marino",
-      "position": "CENTROCAMPISTA",
-      "squad": "stallions",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1049,7 +1040,7 @@
       "name": "Brusadelli",
       "position": "CENTROCAMPISTA",
       "squad": "stallions",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1058,7 +1049,34 @@
       "name": "Frosio",
       "position": "CENTROCAMPISTA",
       "squad": "stallions",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 115,
+      "name": "Marino",
+      "position": "CENTROCAMPISTA",
+      "squad": "stallions",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 113,
+      "name": "Pannuti",
+      "position": "CENTROCAMPISTA",
+      "squad": "stallions",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 112,
+      "name": "Proietti",
+      "position": "CENTROCAMPISTA",
+      "squad": "stallions",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1067,7 +1085,7 @@
       "name": "Soldà",
       "position": "ATTACCANTE",
       "squad": "stallions",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1076,7 +1094,7 @@
       "name": "Evangelisti",
       "position": "DIFENSORE",
       "squad": "stallions",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1085,7 +1103,7 @@
       "name": "Altamura",
       "position": "CENTROCAMPISTA",
       "squad": "stallions",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1094,7 +1112,115 @@
       "name": "Stojkovic",
       "position": "ATTACCANTE",
       "squad": "stallions",
-      "wildcard": true,
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 74,
+      "name": "Borges",
+      "position": "PORTIERE",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 73,
+      "name": "Vagge",
+      "position": "PORTIERE",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 76,
+      "name": "Di Dio",
+      "position": "DIFENSORE",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 78,
+      "name": "Filippi",
+      "position": "DIFENSORE",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 75,
+      "name": "Muscas",
+      "position": "DIFENSORE",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 77,
+      "name": "Zefi",
+      "position": "DIFENSORE",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 79,
+      "name": "Pagliaro",
+      "position": "CENTROCAMPISTA",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 80,
+      "name": "Turati",
+      "position": "CENTROCAMPISTA",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 81,
+      "name": "Bezziccheri",
+      "position": "ATTACCANTE",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 82,
+      "name": "Tropea",
+      "position": "DIFENSORE",
+      "squad": "trm fc",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 83,
+      "name": "Scienza",
+      "position": "ATTACCANTE",
+      "squad": "trm fc",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 84,
+      "name": "Vono",
+      "position": "ATTACCANTE",
+      "squad": "trm fc",
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1103,7 +1229,7 @@
       "name": "Calabrò",
       "position": "PORTIERE",
       "squad": "underdogs fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1112,25 +1238,7 @@
       "name": "Taliento",
       "position": "PORTIERE",
       "squad": "underdogs fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 124,
-      "name": "Gorgoglione",
-      "position": "DIFENSORE",
-      "squad": "underdogs fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 125,
-      "name": "Pisan",
-      "position": "DIFENSORE",
-      "squad": "underdogs fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1139,7 +1247,25 @@
       "name": "Bertaglio",
       "position": "DIFENSORE",
       "squad": "underdogs fc",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 124,
+      "name": "Gorgoglione",
+      "position": "DIFENSORE",
+      "squad": "underdogs fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 125,
+      "name": "Pisan",
+      "position": "DIFENSORE",
+      "squad": "underdogs fc",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1148,7 +1274,7 @@
       "name": "Cannataro",
       "position": "CENTROCAMPISTA",
       "squad": "underdogs fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1157,16 +1283,25 @@
       "name": "Cavalli",
       "position": "CENTROCAMPISTA",
       "squad": "underdogs fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": 129,
-      "name": "Zito",
+      "id": "player_150",
+      "name": "Di Gioia",
+      "position": "CENTROCAMPISTA",
+      "squad": "underdogs fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_151",
+      "name": "Cogi",
       "position": "ATTACCANTE",
       "squad": "underdogs fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1175,7 +1310,16 @@
       "name": "Marti",
       "position": "ATTACCANTE",
       "squad": "underdogs fc",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 129,
+      "name": "Zito",
+      "position": "ATTACCANTE",
+      "squad": "underdogs fc",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1184,16 +1328,7 @@
       "name": "Lunghi",
       "position": "DIFENSORE",
       "squad": "underdogs fc",
-      "wildcard": true,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 132,
-      "name": "Rossi",
-      "position": "ATTACCANTE",
-      "squad": "underdogs fc",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1202,16 +1337,16 @@
       "name": "Perrotti",
       "position": "ATTACCANTE",
       "squad": "underdogs fc",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": 134,
-      "name": "Travaini",
-      "position": "PORTIERE",
-      "squad": "zebras fc",
-      "wildcard": false,
+      "id": 132,
+      "name": "Rossi",
+      "position": "ATTACCANTE",
+      "squad": "underdogs fc",
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1220,25 +1355,16 @@
       "name": "D'Ippolito",
       "position": "PORTIERE",
       "squad": "zebras fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": 136,
-      "name": "Pelli",
-      "position": "CENTROCAMPISTA",
+      "id": 134,
+      "name": "Travaini",
+      "position": "PORTIERE",
       "squad": "zebras fc",
-      "wildcard": false,
-      "created_at": "2024-12-19T12:00:00Z",
-      "updated_at": "2024-12-19T12:00:00Z"
-    },
-    {
-      "id": 137,
-      "name": "Bonzi",
-      "position": "CENTROCAMPISTA",
-      "squad": "zebras fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1247,7 +1373,16 @@
       "name": "Baioni",
       "position": "CENTROCAMPISTA",
       "squad": "zebras fc",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 137,
+      "name": "Bonzi",
+      "position": "CENTROCAMPISTA",
+      "squad": "zebras fc",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1256,16 +1391,16 @@
       "name": "Maggioni",
       "position": "CENTROCAMPISTA",
       "squad": "zebras fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
-      "id": 140,
-      "name": "Petrola'",
-      "position": "ATTACCANTE",
+      "id": 136,
+      "name": "Pelli",
+      "position": "CENTROCAMPISTA",
       "squad": "zebras fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1274,7 +1409,25 @@
       "name": "Berra",
       "position": "ATTACCANTE",
       "squad": "zebras fc",
-      "wildcard": false,
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_152",
+      "name": "Damascelli",
+      "position": "ATTACCANTE",
+      "squad": "zebras fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": 140,
+      "name": "Petrola'",
+      "position": "ATTACCANTE",
+      "squad": "zebras fc",
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1283,7 +1436,7 @@
       "name": "Sofia",
       "position": "ATTACCANTE",
       "squad": "zebras fc",
-      "wildcard": false,
+      "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1292,7 +1445,7 @@
       "name": "Bosco",
       "position": "DIFENSORE",
       "squad": "zebras fc",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1301,7 +1454,7 @@
       "name": "Tarasco",
       "position": "DIFENSORE",
       "squad": "zebras fc",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     },
@@ -1310,7 +1463,7 @@
       "name": "Filipi",
       "position": "ATTACCANTE",
       "squad": "zebras fc",
-      "wildcard": true,
+      "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
     }
@@ -1318,10 +1471,10 @@
   "metadata": {
     "version": "1.0",
     "last_updated": "2024-12-19T12:00:00Z",
-    "total_players": 146,
+    "total_players": 163,
     "squads": [
       "alpak",
-      "bigbro", 
+      "bigbro",
       "boomers",
       "caesar",
       "circus",
