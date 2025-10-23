@@ -883,6 +883,15 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
+      "id": "player_165",
+      "name": "Djidji",
+      "position": "DIFENSORE",
+      "squad": "fc zeta",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
       "id": 96,
       "name": "Iocolano",
       "position": "CENTROCAMPISTA",
@@ -975,6 +984,15 @@
     {
       "id": 104,
       "name": "de la Cruz",
+      "position": "ATTACCANTE",
+      "squad": "gear 7",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_164",
+      "name": "Suma",
       "position": "ATTACCANTE",
       "squad": "gear 7",
       "wildcard": "NO",
@@ -1110,6 +1128,15 @@
     {
       "id": 121,
       "name": "Stojkovic",
+      "position": "ATTACCANTE",
+      "squad": "stallions",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_166",
+      "name": "Zagari",
       "position": "ATTACCANTE",
       "squad": "stallions",
       "wildcard": "SI",
@@ -1300,7 +1327,7 @@
       "id": "player_151",
       "name": "Cogi",
       "position": "ATTACCANTE",
-      "squad": "underdogs fc",
+      "squad": "gear 7",
       "wildcard": "NO",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
@@ -1471,7 +1498,7 @@
   "metadata": {
     "version": "1.0",
     "last_updated": "2024-12-19T12:00:00Z",
-    "total_players": 163,
+    "total_players": 166,
     "squads": [
       "alpak",
       "bigbro",
