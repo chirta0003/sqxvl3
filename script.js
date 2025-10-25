@@ -784,6 +784,7 @@ class TeamManager {
         // History for undo/redo functionality
         let drawingHistory = [];
         let historyIndex = -1;
+        let eraserSessionActive = false;
 
         // Make tactical tools panel draggable
         this.makeDraggable(tacticalToolsPanel);
@@ -846,6 +847,12 @@ class TeamManager {
                 
                 currentTool = btn.dataset.tool;
                 console.log('Selected tool:', currentTool);
+                
+                // Remove eraser preview when switching away from eraser
+                if (currentTool !== 'eraser' && eraserPreview) {
+                    eraserPreview.remove();
+                    eraserPreview = null;
+                }
             });
         });
 
@@ -853,9 +860,380 @@ class TeamManager {
         if (tacticalCanvas) {
             let currentPath = null; // For pen tool
             let pathPoints = []; // Store points for pen drawing
+            let eraserPreview = null; // For eraser preview circle
+            
+            // Create eraser preview circle
+            const createEraserPreview = (canvas) => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('class', 'eraser-preview');
+                circle.setAttribute('fill', 'none');
+                circle.setAttribute('stroke', '#ff0000');
+                circle.setAttribute('stroke-width', '2');
+                circle.setAttribute('stroke-dasharray', '5,5');
+                circle.setAttribute('opacity', '0.7');
+                circle.style.pointerEvents = 'none';
+                canvas.appendChild(circle);
+                return circle;
+            };
+            
+            // Update eraser preview position and size
+            const updateEraserPreview = (circle, x, y, radius) => {
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', radius);
+            };
+            
+            // Remove or cut elements within eraser circle
+            const eraseElements = (canvas, x, y, radius) => {
+                const elements = canvas.querySelectorAll('.tactical-element, .temp-element');
+                let hasChanges = false;
+                
+                elements.forEach(element => {
+                    const tagName = element.tagName.toLowerCase();
+                    
+                    if (tagName === 'line') {
+                        if (cutLineWithCircle(element, x, y, radius, canvas)) {
+                            hasChanges = true;
+                        }
+                    } else if (tagName === 'path') {
+                        if (cutPathWithCircle(element, x, y, radius, canvas)) {
+                            hasChanges = true;
+                        }
+                    } else {
+                        // For other elements (circles, rectangles), use original logic
+                        if (isElementInCircle(element, x, y, radius)) {
+                            element.remove();
+                            hasChanges = true;
+                        }
+                    }
+                });
+                
+                // Only save to history if changes occurred and we're not in an active eraser session
+                if (hasChanges && !eraserSessionActive) {
+                    eraserSessionActive = true;
+                    this.saveToHistory(canvas);
+                }
+            };
+            
+            // Cut line element with eraser circle
+            const cutLineWithCircle = (line, centerX, centerY, radius, canvas) => {
+                const x1 = parseFloat(line.getAttribute('x1'));
+                const y1 = parseFloat(line.getAttribute('y1'));
+                const x2 = parseFloat(line.getAttribute('x2'));
+                const y2 = parseFloat(line.getAttribute('y2'));
+                
+                const intersections = getLineCircleIntersections(x1, y1, x2, y2, centerX, centerY, radius);
+                
+                if (intersections.length === 0) {
+                    return false; // No intersection, no changes
+                }
+                
+                // Sort intersections by distance from start point
+                intersections.sort((a, b) => {
+                    const distA = Math.sqrt((a.x - x1) ** 2 + (a.y - y1) ** 2);
+                    const distB = Math.sqrt((b.x - x1) ** 2 + (b.y - y1) ** 2);
+                    return distA - distB;
+                });
+                
+                // Remove original line
+                const lineAttributes = {
+                    stroke: line.getAttribute('stroke'),
+                    'stroke-width': line.getAttribute('stroke-width'),
+                    'stroke-dasharray': line.getAttribute('stroke-dasharray'),
+                    class: line.getAttribute('class')
+                };
+                line.remove();
+                
+                // Create new line segments
+                if (intersections.length >= 1) {
+                    const firstIntersection = intersections[0];
+                    const lastIntersection = intersections[intersections.length - 1];
+                    
+                    // Create segment from start to first intersection
+                    const dist1 = Math.sqrt((firstIntersection.x - x1) ** 2 + (firstIntersection.y - y1) ** 2);
+                    if (dist1 > 2) { // Only create if segment is long enough
+                        createLineSegment(canvas, x1, y1, firstIntersection.x, firstIntersection.y, lineAttributes);
+                    }
+                    
+                    // Create segment from last intersection to end
+                    const dist2 = Math.sqrt((x2 - lastIntersection.x) ** 2 + (y2 - lastIntersection.y) ** 2);
+                    if (dist2 > 2) { // Only create if segment is long enough
+                        createLineSegment(canvas, lastIntersection.x, lastIntersection.y, x2, y2, lineAttributes);
+                    }
+                }
+                
+                return true;
+            };
+            
+            // Cut path element with eraser circle
+            const cutPathWithCircle = (path, centerX, centerY, radius, canvas) => {
+                const pathData = path.getAttribute('d');
+                if (!pathData) return false;
+                
+                // Parse path data to get points
+                const points = parsePathData(pathData);
+                if (points.length < 2) return false;
+                
+                // Find segments that intersect with circle
+                const segments = [];
+                let currentSegment = [];
+                
+                for (let i = 0; i < points.length; i++) {
+                    const point = points[i];
+                    const distanceFromCenter = Math.sqrt(
+                        (point.x - centerX) ** 2 + (point.y - centerY) ** 2
+                    );
+                    
+                    if (distanceFromCenter > radius) {
+                        // Point is outside circle, add to current segment
+                        currentSegment.push(point);
+                    } else {
+                        // Point is inside circle
+                        if (currentSegment.length > 1) {
+                            segments.push([...currentSegment]);
+                        }
+                        currentSegment = [];
+                    }
+                }
+                
+                // Add final segment if it exists
+                if (currentSegment.length > 1) {
+                    segments.push(currentSegment);
+                }
+                
+                // If no segments remain, remove entire path
+                if (segments.length === 0) {
+                    path.remove();
+                    return true;
+                }
+                
+                // If segments are the same as original, no changes needed
+                if (segments.length === 1 && segments[0].length === points.length) {
+                    return false;
+                }
+                
+                // Remove original path and create new segments
+                const pathAttributes = {
+                    stroke: path.getAttribute('stroke'),
+                    'stroke-width': path.getAttribute('stroke-width'),
+                    fill: path.getAttribute('fill'),
+                    class: path.getAttribute('class')
+                };
+                path.remove();
+                
+                // Create new path segments
+                segments.forEach(segment => {
+                    if (segment.length > 1) {
+                        createPathSegment(canvas, segment, pathAttributes);
+                    }
+                });
+                
+                return true;
+            };
+            
+            // Helper function to create line segment
+            const createLineSegment = (canvas, x1, y1, x2, y2, attributes) => {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                
+                Object.keys(attributes).forEach(attr => {
+                    if (attributes[attr]) {
+                        line.setAttribute(attr, attributes[attr]);
+                    }
+                });
+                
+                canvas.appendChild(line);
+            };
+            
+            // Helper function to create path segment
+            const createPathSegment = (canvas, points, attributes) => {
+                if (points.length < 2) return;
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                
+                let pathData = `M ${points[0].x} ${points[0].y}`;
+                
+                if (points.length === 2) {
+                    pathData += ` L ${points[1].x} ${points[1].y}`;
+                } else {
+                    // Use the same curve generation as the original pen tool
+                    for (let i = 1; i < points.length - 1; i++) {
+                        const currentPoint = points[i];
+                        const nextPoint = points[i + 1];
+                        const controlX = (currentPoint.x + nextPoint.x) / 2;
+                        const controlY = (currentPoint.y + nextPoint.y) / 2;
+                        
+                        if (i === 1) {
+                            pathData += ` Q ${currentPoint.x} ${currentPoint.y} ${controlX} ${controlY}`;
+                        } else {
+                            pathData += ` T ${controlX} ${controlY}`;
+                        }
+                    }
+                    
+                    // Add the last point
+                    const lastPoint = points[points.length - 1];
+                    pathData += ` T ${lastPoint.x} ${lastPoint.y}`;
+                }
+                
+                path.setAttribute('d', pathData);
+                
+                Object.keys(attributes).forEach(attr => {
+                    if (attributes[attr]) {
+                        path.setAttribute(attr, attributes[attr]);
+                    }
+                });
+                
+                canvas.appendChild(path);
+            };
+            
+            // Parse SVG path data to extract points
+            const parsePathData = (pathData) => {
+                const points = [];
+                const commands = pathData.match(/[MmLlHhVvCcSsQqTtAaZz][^MmLlHhVvCcSsQqTtAaZz]*/g);
+                
+                if (!commands) return points;
+                
+                let currentX = 0, currentY = 0;
+                let lastControlX = 0, lastControlY = 0;
+                
+                commands.forEach(command => {
+                    const type = command[0];
+                    const coords = command.slice(1).trim().split(/[\s,]+/).map(parseFloat);
+                    
+                    if (type === 'M' || type === 'm') {
+                        for (let i = 0; i < coords.length; i += 2) {
+                            if (type === 'M') {
+                                currentX = coords[i];
+                                currentY = coords[i + 1];
+                            } else {
+                                currentX += coords[i];
+                                currentY += coords[i + 1];
+                            }
+                            points.push({ x: currentX, y: currentY });
+                        }
+                    } else if (type === 'L' || type === 'l') {
+                        for (let i = 0; i < coords.length; i += 2) {
+                            if (type === 'L') {
+                                currentX = coords[i];
+                                currentY = coords[i + 1];
+                            } else {
+                                currentX += coords[i];
+                                currentY += coords[i + 1];
+                            }
+                            points.push({ x: currentX, y: currentY });
+                        }
+                    } else if (type === 'Q' || type === 'q') {
+                        for (let i = 0; i < coords.length; i += 4) {
+                            if (type === 'Q') {
+                                lastControlX = coords[i];
+                                lastControlY = coords[i + 1];
+                                currentX = coords[i + 2];
+                                currentY = coords[i + 3];
+                            } else {
+                                lastControlX = currentX + coords[i];
+                                lastControlY = currentY + coords[i + 1];
+                                currentX += coords[i + 2];
+                                currentY += coords[i + 3];
+                            }
+                            points.push({ x: currentX, y: currentY });
+                        }
+                    } else if (type === 'T' || type === 't') {
+                        for (let i = 0; i < coords.length; i += 2) {
+                            // T command uses reflection of previous control point
+                            const reflectedControlX = currentX + (currentX - lastControlX);
+                            const reflectedControlY = currentY + (currentY - lastControlY);
+                            
+                            if (type === 'T') {
+                                currentX = coords[i];
+                                currentY = coords[i + 1];
+                            } else {
+                                currentX += coords[i];
+                                currentY += coords[i + 1];
+                            }
+                            
+                            lastControlX = reflectedControlX;
+                            lastControlY = reflectedControlY;
+                            points.push({ x: currentX, y: currentY });
+                        }
+                    }
+                });
+                
+                return points;
+            };
+            
+            // Calculate line-circle intersections
+            const getLineCircleIntersections = (x1, y1, x2, y2, cx, cy, r) => {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const fx = x1 - cx;
+                const fy = y1 - cy;
+                
+                const a = dx * dx + dy * dy;
+                const b = 2 * (fx * dx + fy * dy);
+                const c = (fx * fx + fy * fy) - r * r;
+                
+                const discriminant = b * b - 4 * a * c;
+                
+                if (discriminant < 0) {
+                    return []; // No intersection
+                }
+                
+                const discriminantSqrt = Math.sqrt(discriminant);
+                const t1 = (-b - discriminantSqrt) / (2 * a);
+                const t2 = (-b + discriminantSqrt) / (2 * a);
+                
+                const intersections = [];
+                
+                if (t1 >= 0 && t1 <= 1) {
+                    intersections.push({
+                        x: x1 + t1 * dx,
+                        y: y1 + t1 * dy
+                    });
+                }
+                
+                if (t2 >= 0 && t2 <= 1 && Math.abs(t2 - t1) > 0.001) {
+                    intersections.push({
+                        x: x1 + t2 * dx,
+                        y: y1 + t2 * dy
+                    });
+                }
+                
+                return intersections;
+            };
+            
+            // Check if element intersects with eraser circle (for non-line elements)
+            const isElementInCircle = (element, centerX, centerY, radius) => {
+                const bbox = element.getBBox();
+                const elementCenterX = bbox.x + bbox.width / 2;
+                const elementCenterY = bbox.y + bbox.height / 2;
+                
+                // Check if element center is within circle
+                const distance = Math.sqrt(
+                    Math.pow(elementCenterX - centerX, 2) + 
+                    Math.pow(elementCenterY - centerY, 2)
+                );
+                
+                return distance <= radius;
+            };
             
             tacticalCanvas.addEventListener('mousedown', (e) => {
                 if (!tacticalMode) return;
+                
+                if (currentTool === 'eraser') {
+                    // Handle eraser tool
+                    const rect = tacticalCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const strokeWidth = parseInt(document.getElementById('strokeWidth').value);
+                    const radius = strokeWidth * 5; // Scale radius based on thickness
+                    
+                    eraseElements(tacticalCanvas, x, y, radius);
+                    isDrawing = true;
+                    return;
+                }
                 
                 if (currentTool === 'select') {
                     // Handle selection
@@ -912,13 +1290,36 @@ class TeamManager {
             });
 
             tacticalCanvas.addEventListener('mousemove', (e) => {
-                if (!isDrawing || currentTool === 'select' || currentTool === 'text') return;
-                
                 const rect = tacticalCanvas.getBoundingClientRect();
                 const currentPoint = {
                     x: e.clientX - rect.left,
                     y: e.clientY - rect.top
                 };
+                
+                if (currentTool === 'eraser') {
+                    // Show eraser preview
+                    if (!eraserPreview) {
+                        eraserPreview = createEraserPreview(tacticalCanvas);
+                    }
+                    
+                    const strokeWidth = parseInt(document.getElementById('strokeWidth').value);
+                    const radius = strokeWidth * 5; // Scale radius based on thickness
+                    updateEraserPreview(eraserPreview, currentPoint.x, currentPoint.y, radius);
+                    
+                    // Continue erasing if mouse is down (freehand erasing)
+                    if (isDrawing) {
+                        eraseElements(tacticalCanvas, currentPoint.x, currentPoint.y, radius);
+                    }
+                    return;
+                } else {
+                    // Remove eraser preview when not using eraser
+                    if (eraserPreview) {
+                        eraserPreview.remove();
+                        eraserPreview = null;
+                    }
+                }
+                
+                if (!isDrawing || currentTool === 'select' || currentTool === 'text') return;
                 
                 if (currentTool === 'pen') {
                     // Handle pen tool - add point to path
@@ -938,6 +1339,13 @@ class TeamManager {
             });
 
             tacticalCanvas.addEventListener('mouseup', (e) => {
+                if (currentTool === 'eraser') {
+                    isDrawing = false;
+                    // Reset eraser session flag when mouse is released
+                    eraserSessionActive = false;
+                    return;
+                }
+                
                 if (!isDrawing || currentTool === 'select' || currentTool === 'text') return;
                 
                 if (currentTool === 'pen') {
@@ -973,6 +1381,14 @@ class TeamManager {
                 
                 isDrawing = false;
                 startPoint = null;
+            });
+            
+            // Handle mouse leave to hide eraser preview
+            tacticalCanvas.addEventListener('mouseleave', () => {
+                if (eraserPreview) {
+                    eraserPreview.remove();
+                    eraserPreview = null;
+                }
             });
         }
 
@@ -1033,6 +1449,16 @@ class TeamManager {
                 historyIndex--;
                 canvas.innerHTML = drawingHistory[historyIndex];
                 selectedElement = null;
+                
+                // Remove eraser preview if it exists by searching for it in the canvas
+                const existingEraserPreview = canvas.querySelector('.eraser-preview');
+                if (existingEraserPreview) {
+                    existingEraserPreview.remove();
+                }
+                // Also reset the variable if it exists in scope
+                if (typeof eraserPreview !== 'undefined' && eraserPreview) {
+                    eraserPreview = null;
+                }
             }
         };
 
@@ -1041,6 +1467,16 @@ class TeamManager {
                 historyIndex++;
                 canvas.innerHTML = drawingHistory[historyIndex];
                 selectedElement = null;
+                
+                // Remove eraser preview if it exists by searching for it in the canvas
+                const existingEraserPreview = canvas.querySelector('.eraser-preview');
+                if (existingEraserPreview) {
+                    existingEraserPreview.remove();
+                }
+                // Also reset the variable if it exists in scope
+                if (typeof eraserPreview !== 'undefined' && eraserPreview) {
+                    eraserPreview = null;
+                }
             }
         };
 
