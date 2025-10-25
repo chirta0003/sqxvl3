@@ -89,47 +89,6 @@ body {
     gap: 1rem;
 }
 
-/* Tactical Mode Button Active State */
-#tacticalModeBtn.active {
-    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%) !important;
-    color: white !important;
-    border-color: var(--success-color) !important;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
-    transform: translateY(-1px);
-}
-
-#tacticalModeBtn.active:hover {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4) !important;
-}
-
-/* Ball Element Styles */
-.ball-element {
-    position: absolute;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    cursor: move;
-    z-index: 10;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    object-fit: contain;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-.ball-element:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-.ball-element:active {
-    cursor: grabbing;
-    transform: scale(0.95);
-}
-
 /* Tab Buttons */
 .tab-btn {
     background: var(--bg-tertiary);
@@ -1638,34 +1597,6 @@ body {
 .tools-section .form-group input[type="range"] {
     width: 100%;
     height: 28px; /* Smaller inputs */
-    cursor: pointer;
-}
-
-.tools-section .form-group input[type="color"] {
-    padding: 0;
-    border: 2px solid var(--border-color);
-    border-radius: 4px;
-    background: none;
-    outline: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
-.tools-section .form-group input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 0;
-    border: none;
-    border-radius: 2px;
-}
-
-.tools-section .form-group input[type="color"]::-webkit-color-swatch {
-    border: none;
-    border-radius: 2px;
-}
-
-.tools-section .form-group input[type="color"]::-moz-color-swatch {
-    border: none;
-    border-radius: 2px;
 }
 
 .tools-section .form-group input[type="range"] {

@@ -2,8 +2,6 @@ class TeamManager {
     constructor() {
         this.draggedPlayer = null;
         this.dragOffset = null;
-        this.ballVisible = false;
-        this.ballElement = null;
         this.init();
     }
 
@@ -105,11 +103,6 @@ class TeamManager {
             this.clearField();
         });
 
-        // Ball button
-        document.getElementById('ballBtn').addEventListener('click', () => {
-            this.toggleBall();
-        });
-
         // Team display mode
         document.getElementById('teamDisplayMode').addEventListener('change', (e) => {
             this.handleTeamDisplayModeChange(e.target.value);
@@ -184,84 +177,6 @@ class TeamManager {
                 this.handlePlayerPoolDrop(e);
             });
         }
-    }
-
-    toggleBall() {
-        if (this.ballVisible) {
-            // Remove the ball
-            if (this.ballElement) {
-                this.ballElement.remove();
-                this.ballElement = null;
-            }
-            this.ballVisible = false;
-        } else {
-            // Add the ball
-            const field = document.getElementById('footballField');
-            const fieldRect = field.getBoundingClientRect();
-            const fieldContainer = document.querySelector('.field-container');
-            const containerRect = fieldContainer.getBoundingClientRect();
-            
-            const ball = document.createElement('img');
-            ball.src = 'ball.png';
-            ball.alt = 'Ball';
-            ball.className = 'ball-element';
-            
-            // Calculate center position relative to the actual field
-            const fieldCenterX = (fieldRect.left - containerRect.left) + (fieldRect.width / 2);
-            const fieldCenterY = (fieldRect.top - containerRect.top) + (fieldRect.height / 2);
-            
-            ball.style.cssText = `
-                position: absolute;
-                width: 90px;
-                height: 90px;
-                left: ${fieldCenterX}px;
-                top: ${fieldCenterY}px;
-                transform: translate(-50%, -50%);
-                z-index: 10;
-                cursor: move;
-                border-radius: 50%;
-                object-fit: contain;
-            `;
-            
-            fieldContainer.appendChild(ball);
-            this.ballElement = ball;
-            this.ballVisible = true;
-            
-            // Make the ball draggable
-            this.makeBallDraggable(ball);
-        }
-    }
-
-    makeBallDraggable(ball) {
-        let isDragging = false;
-        let startX, startY, initialX, initialY;
-
-        ball.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            initialX = ball.offsetLeft;
-            initialY = ball.offsetTop;
-            ball.style.cursor = 'grabbing';
-            e.preventDefault();
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            
-            ball.style.left = (initialX + deltaX) + 'px';
-            ball.style.top = (initialY + deltaY) + 'px';
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                ball.style.cursor = 'move';
-            }
-        });
     }
 
     // Pen tool functions for free-hand drawing
@@ -482,13 +397,8 @@ class TeamManager {
         this.dragOffset = null;
     }
 
-    async clearField() {
-        const confirmed = await this.showConfirmation(
-            'Rimuovi Giocatori',
-            'Sei sicuro di voler rimuovere tutti i giocatori dal campo? Verranno spostati nel Player Pool.'
-        );
-        
-        if (confirmed) {
+    clearField() {
+        if (confirm('Sei sicuro di voler rimuovere tutti i giocatori dal campo? Verranno spostati nel Player Pool.')) {
             const field = document.getElementById('footballField');
             const fieldContainer = document.querySelector('.field-container');
             
@@ -507,56 +417,6 @@ class TeamManager {
             // Re-render player pool to show all players
             this.renderPlayerPool();
         }
-    }
-
-    showConfirmation(title, message) {
-        return new Promise((resolve) => {
-            const modal = document.getElementById('confirmationModal');
-            const overlay = document.getElementById('overlay');
-            const titleElement = document.getElementById('confirmationTitle');
-            const messageElement = document.getElementById('confirmationMessage');
-            const confirmBtn = document.getElementById('confirmationConfirm');
-            const cancelBtn = document.getElementById('confirmationCancel');
-            const closeBtn = document.getElementById('confirmationModalClose');
-
-            // Set content
-            titleElement.textContent = title;
-            messageElement.textContent = message;
-
-            // Show modal
-            modal.classList.add('active');
-            overlay.classList.add('active');
-
-            // Handle confirm
-            const handleConfirm = () => {
-                modal.classList.remove('active');
-                overlay.classList.remove('active');
-                cleanup();
-                resolve(true);
-            };
-
-            // Handle cancel
-            const handleCancel = () => {
-                modal.classList.remove('active');
-                overlay.classList.remove('active');
-                cleanup();
-                resolve(false);
-            };
-
-            // Cleanup function
-            const cleanup = () => {
-                confirmBtn.removeEventListener('click', handleConfirm);
-                cancelBtn.removeEventListener('click', handleCancel);
-                closeBtn.removeEventListener('click', handleCancel);
-                overlay.removeEventListener('click', handleCancel);
-            };
-
-            // Add event listeners
-            confirmBtn.addEventListener('click', handleConfirm);
-            cancelBtn.addEventListener('click', handleCancel);
-            closeBtn.addEventListener('click', handleCancel);
-            overlay.addEventListener('click', handleCancel);
-        });
     }
 
     renderPlayerPool() {
@@ -1696,13 +1556,10 @@ class TeamManager {
         let isDragging = false;
         let startX, startY, initialX, initialY;
         
-        // Allow dragging from the entire panel, not just the header
-        element.addEventListener('mousedown', (e) => {
-            // Don't start dragging if clicking on interactive elements
-            if (e.target.closest('button, input, select, textarea, .tool-btn, .action-btn')) {
-                return;
-            }
-            
+        const header = element.querySelector('.tools-header');
+        if (!header) return;
+        
+        header.addEventListener('mousedown', (e) => {
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;
@@ -1712,7 +1569,6 @@ class TeamManager {
             initialY = rect.top;
             
             element.style.transition = 'none';
-            element.style.cursor = 'grabbing';
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
             e.preventDefault();
@@ -1742,7 +1598,6 @@ class TeamManager {
         function handleMouseUp() {
             isDragging = false;
             element.style.transition = '';
-            element.style.cursor = '';
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         }
