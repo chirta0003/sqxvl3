@@ -179,6 +179,58 @@ class TeamManager {
         }
     }
 
+    // Pen tool functions for free-hand drawing
+    createPenPath(canvas, points) {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const path = document.createElementNS(svgNS, 'path');
+        
+        // Get current style settings
+        const strokeColor = document.getElementById('strokeColor')?.value || '#3b82f6';
+        const strokeWidth = document.getElementById('strokeWidth')?.value || '2';
+        
+        path.setAttribute('stroke', strokeColor);
+        path.setAttribute('stroke-width', strokeWidth);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        path.classList.add('temp-element');
+        
+        this.updatePenPath(path, points);
+        canvas.appendChild(path);
+        
+        return path;
+    }
+
+    updatePenPath(path, points) {
+        if (points.length < 2) return;
+        
+        let pathData = `M ${points[0].x} ${points[0].y}`;
+        
+        if (points.length === 2) {
+            pathData += ` L ${points[1].x} ${points[1].y}`;
+        } else {
+            // Use quadratic curves for smoother lines
+            for (let i = 1; i < points.length - 1; i++) {
+                const currentPoint = points[i];
+                const nextPoint = points[i + 1];
+                const controlX = (currentPoint.x + nextPoint.x) / 2;
+                const controlY = (currentPoint.y + nextPoint.y) / 2;
+                
+                if (i === 1) {
+                    pathData += ` Q ${currentPoint.x} ${currentPoint.y} ${controlX} ${controlY}`;
+                } else {
+                    pathData += ` T ${controlX} ${controlY}`;
+                }
+            }
+            
+            // Add the last point
+            const lastPoint = points[points.length - 1];
+            pathData += ` T ${lastPoint.x} ${lastPoint.y}`;
+        }
+        
+        path.setAttribute('d', pathData);
+    }
+
     handleFieldContainerDrop(e) {
         if (!this.draggedPlayer || !this.dragOffset) return;
 
@@ -799,6 +851,9 @@ class TeamManager {
 
         // Setup canvas drawing functionality
         if (tacticalCanvas) {
+            let currentPath = null; // For pen tool
+            let pathPoints = []; // Store points for pen drawing
+            
             tacticalCanvas.addEventListener('mousedown', (e) => {
                 if (!tacticalMode) return;
                 
@@ -834,6 +889,20 @@ class TeamManager {
                     return;
                 }
                 
+                if (currentTool === 'pen') {
+                    // Handle pen tool - start new path
+                    const rect = tacticalCanvas.getBoundingClientRect();
+                    const point = {
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top
+                    };
+                    
+                    pathPoints = [point];
+                    currentPath = this.createPenPath(tacticalCanvas, pathPoints);
+                    isDrawing = true;
+                    return;
+                }
+                
                 isDrawing = true;
                 const rect = tacticalCanvas.getBoundingClientRect();
                 startPoint = {
@@ -843,13 +912,22 @@ class TeamManager {
             });
 
             tacticalCanvas.addEventListener('mousemove', (e) => {
-                if (!isDrawing || !startPoint || currentTool === 'select' || currentTool === 'text') return;
+                if (!isDrawing || currentTool === 'select' || currentTool === 'text') return;
                 
                 const rect = tacticalCanvas.getBoundingClientRect();
                 const currentPoint = {
                     x: e.clientX - rect.left,
                     y: e.clientY - rect.top
                 };
+                
+                if (currentTool === 'pen') {
+                    // Handle pen tool - add point to path
+                    pathPoints.push(currentPoint);
+                    this.updatePenPath(currentPath, pathPoints);
+                    return;
+                }
+                
+                if (!startPoint) return;
                 
                 // Remove temporary elements
                 const tempElements = tacticalCanvas.querySelectorAll('.temp-element');
@@ -860,7 +938,22 @@ class TeamManager {
             });
 
             tacticalCanvas.addEventListener('mouseup', (e) => {
-                if (!isDrawing || !startPoint || currentTool === 'select' || currentTool === 'text') return;
+                if (!isDrawing || currentTool === 'select' || currentTool === 'text') return;
+                
+                if (currentTool === 'pen') {
+                    // Handle pen tool - finalize path
+                    if (currentPath) {
+                        currentPath.classList.remove('temp-element');
+                        currentPath.classList.add('tactical-element');
+                        this.saveToHistory(tacticalCanvas);
+                    }
+                    currentPath = null;
+                    pathPoints = [];
+                    isDrawing = false;
+                    return;
+                }
+                
+                if (!startPoint) return;
                 
                 const rect = tacticalCanvas.getBoundingClientRect();
                 const endPoint = {
