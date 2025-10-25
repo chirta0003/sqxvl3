@@ -2,6 +2,8 @@ class TeamManager {
     constructor() {
         this.draggedPlayer = null;
         this.dragOffset = null;
+        this.ballVisible = false;
+        this.ballElement = null;
         this.init();
     }
 
@@ -103,6 +105,11 @@ class TeamManager {
             this.clearField();
         });
 
+        // Ball button
+        document.getElementById('ballBtn').addEventListener('click', () => {
+            this.toggleBall();
+        });
+
         // Team display mode
         document.getElementById('teamDisplayMode').addEventListener('change', (e) => {
             this.handleTeamDisplayModeChange(e.target.value);
@@ -177,6 +184,84 @@ class TeamManager {
                 this.handlePlayerPoolDrop(e);
             });
         }
+    }
+
+    toggleBall() {
+        if (this.ballVisible) {
+            // Remove the ball
+            if (this.ballElement) {
+                this.ballElement.remove();
+                this.ballElement = null;
+            }
+            this.ballVisible = false;
+        } else {
+            // Add the ball
+            const field = document.getElementById('footballField');
+            const fieldRect = field.getBoundingClientRect();
+            const fieldContainer = document.querySelector('.field-container');
+            const containerRect = fieldContainer.getBoundingClientRect();
+            
+            const ball = document.createElement('img');
+            ball.src = 'ball.png';
+            ball.alt = 'Ball';
+            ball.className = 'ball-element';
+            
+            // Calculate center position relative to the actual field
+            const fieldCenterX = (fieldRect.left - containerRect.left) + (fieldRect.width / 2);
+            const fieldCenterY = (fieldRect.top - containerRect.top) + (fieldRect.height / 2);
+            
+            ball.style.cssText = `
+                position: absolute;
+                width: 90px;
+                height: 90px;
+                left: ${fieldCenterX}px;
+                top: ${fieldCenterY}px;
+                transform: translate(-50%, -50%);
+                z-index: 10;
+                cursor: move;
+                border-radius: 50%;
+                object-fit: contain;
+            `;
+            
+            fieldContainer.appendChild(ball);
+            this.ballElement = ball;
+            this.ballVisible = true;
+            
+            // Make the ball draggable
+            this.makeBallDraggable(ball);
+        }
+    }
+
+    makeBallDraggable(ball) {
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        ball.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = ball.offsetLeft;
+            initialY = ball.offsetTop;
+            ball.style.cursor = 'grabbing';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            ball.style.left = (initialX + deltaX) + 'px';
+            ball.style.top = (initialY + deltaY) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                ball.style.cursor = 'move';
+            }
+        });
     }
 
     // Pen tool functions for free-hand drawing
@@ -397,8 +482,13 @@ class TeamManager {
         this.dragOffset = null;
     }
 
-    clearField() {
-        if (confirm('Sei sicuro di voler rimuovere tutti i giocatori dal campo? Verranno spostati nel Player Pool.')) {
+    async clearField() {
+        const confirmed = await this.showConfirmation(
+            'Rimuovi Giocatori',
+            'Sei sicuro di voler rimuovere tutti i giocatori dal campo? Verranno spostati nel Player Pool.'
+        );
+        
+        if (confirmed) {
             const field = document.getElementById('footballField');
             const fieldContainer = document.querySelector('.field-container');
             
@@ -417,6 +507,56 @@ class TeamManager {
             // Re-render player pool to show all players
             this.renderPlayerPool();
         }
+    }
+
+    showConfirmation(title, message) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('confirmationModal');
+            const overlay = document.getElementById('overlay');
+            const titleElement = document.getElementById('confirmationTitle');
+            const messageElement = document.getElementById('confirmationMessage');
+            const confirmBtn = document.getElementById('confirmationConfirm');
+            const cancelBtn = document.getElementById('confirmationCancel');
+            const closeBtn = document.getElementById('confirmationModalClose');
+
+            // Set content
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+
+            // Show modal
+            modal.classList.add('active');
+            overlay.classList.add('active');
+
+            // Handle confirm
+            const handleConfirm = () => {
+                modal.classList.remove('active');
+                overlay.classList.remove('active');
+                cleanup();
+                resolve(true);
+            };
+
+            // Handle cancel
+            const handleCancel = () => {
+                modal.classList.remove('active');
+                overlay.classList.remove('active');
+                cleanup();
+                resolve(false);
+            };
+
+            // Cleanup function
+            const cleanup = () => {
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+                closeBtn.removeEventListener('click', handleCancel);
+                overlay.removeEventListener('click', handleCancel);
+            };
+
+            // Add event listeners
+            confirmBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+            closeBtn.addEventListener('click', handleCancel);
+            overlay.addEventListener('click', handleCancel);
+        });
     }
 
     renderPlayerPool() {
@@ -970,61 +1110,93 @@ class TeamManager {
                 const pathData = path.getAttribute('d');
                 if (!pathData) return false;
                 
-                // Parse path data to get points
-                const points = parsePathData(pathData);
-                if (points.length < 2) return false;
+                // Check if the path intersects with the eraser circle by testing the actual path
+                const pathElement = path.cloneNode(true);
+                const pathLength = pathElement.getTotalLength ? pathElement.getTotalLength() : 0;
                 
-                // Find segments that intersect with circle
-                const segments = [];
-                let currentSegment = [];
+                if (pathLength === 0) return false;
                 
-                for (let i = 0; i < points.length; i++) {
-                    const point = points[i];
-                    const distanceFromCenter = Math.sqrt(
-                        (point.x - centerX) ** 2 + (point.y - centerY) ** 2
-                    );
+                // Sample points along the path to check for intersection
+                const sampleCount = Math.max(50, Math.floor(pathLength / 2));
+                let hasIntersection = false;
+                const intersectionRanges = [];
+                let currentRange = null;
+                
+                for (let i = 0; i <= sampleCount; i++) {
+                    const t = i / sampleCount;
+                    const point = pathElement.getPointAtLength ? pathElement.getPointAtLength(t * pathLength) : null;
                     
-                    if (distanceFromCenter > radius) {
-                        // Point is outside circle, add to current segment
-                        currentSegment.push(point);
-                    } else {
-                        // Point is inside circle
-                        if (currentSegment.length > 1) {
-                            segments.push([...currentSegment]);
+                    if (point) {
+                        const distance = Math.sqrt(
+                            (point.x - centerX) ** 2 + (point.y - centerY) ** 2
+                        );
+                        const isInside = distance <= radius;
+                        
+                        if (isInside) {
+                            hasIntersection = true;
+                            if (!currentRange) {
+                                currentRange = { start: t, end: t };
+                            } else {
+                                currentRange.end = t;
+                            }
+                        } else {
+                            if (currentRange) {
+                                intersectionRanges.push(currentRange);
+                                currentRange = null;
+                            }
                         }
-                        currentSegment = [];
                     }
                 }
                 
-                // Add final segment if it exists
-                if (currentSegment.length > 1) {
-                    segments.push(currentSegment);
+                // Add final range if it exists
+                if (currentRange) {
+                    intersectionRanges.push(currentRange);
                 }
                 
-                // If no segments remain, remove entire path
-                if (segments.length === 0) {
+                // If no intersection, no changes needed
+                if (!hasIntersection) {
+                    return false;
+                }
+                
+                // If the entire path is inside the circle, remove it
+                if (intersectionRanges.length === 1 && 
+                    intersectionRanges[0].start <= 0.01 && 
+                    intersectionRanges[0].end >= 0.99) {
                     path.remove();
                     return true;
                 }
                 
-                // If segments are the same as original, no changes needed
-                if (segments.length === 1 && segments[0].length === points.length) {
-                    return false;
-                }
-                
-                // Remove original path and create new segments
+                // Store original path attributes
                 const pathAttributes = {
                     stroke: path.getAttribute('stroke'),
                     'stroke-width': path.getAttribute('stroke-width'),
                     fill: path.getAttribute('fill'),
                     class: path.getAttribute('class')
                 };
+                
+                // Create segments for the parts that should remain
+                const segments = [];
+                let lastEnd = 0;
+                
+                intersectionRanges.forEach(range => {
+                    if (range.start > lastEnd + 0.01) {
+                        segments.push({ start: lastEnd, end: range.start });
+                    }
+                    lastEnd = range.end;
+                });
+                
+                // Add final segment if needed
+                if (lastEnd < 0.99) {
+                    segments.push({ start: lastEnd, end: 1 });
+                }
+                
+                // Remove original path
                 path.remove();
                 
-                // Create new path segments
+                // Create new path segments preserving original curves
                 segments.forEach(segment => {
-                    if (segment.length > 1) {
-                        createPathSegment(canvas, segment, pathAttributes);
+                    if (segment.end - segment.start > 0.01) {
+                        createPathSegmentFromOriginal(canvas, pathElement, segment.start, segment.end, pathAttributes, pathLength);
                     }
                 });
                 
@@ -1048,37 +1220,62 @@ class TeamManager {
                 canvas.appendChild(line);
             };
             
-            // Helper function to create path segment
-            const createPathSegment = (canvas, points, attributes) => {
-                if (points.length < 2) return;
+            // Helper function to create path segment from original path preserving curves
+            const createPathSegmentFromOriginal = (canvas, originalPath, startT, endT, attributes, pathLength) => {
+                if (!originalPath.getPointAtLength) return;
                 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 
-                let pathData = `M ${points[0].x} ${points[0].y}`;
+                // Calculate segment length and determine appropriate sampling
+                const segmentLength = (endT - startT) * pathLength;
                 
-                if (points.length === 2) {
-                    pathData += ` L ${points[1].x} ${points[1].y}`;
+                // Use higher density sampling for better curve preservation
+                // Minimum 20 points, with more points for longer segments
+                const sampleCount = Math.max(20, Math.floor(segmentLength / 2));
+                const points = [];
+                
+                for (let i = 0; i <= sampleCount; i++) {
+                    const t = startT + (endT - startT) * (i / sampleCount);
+                    const point = originalPath.getPointAtLength(t * pathLength);
+                    if (point) {
+                        points.push({ x: point.x, y: point.y });
+                    }
+                }
+                
+                if (points.length < 2) return;
+                
+                // Try to extract and preserve the original path data structure
+                const originalPathData = originalPath.getAttribute('d');
+                if (originalPathData && segmentLength > pathLength * 0.8) {
+                    // If we're preserving most of the path, try to use the original path data
+                    path.setAttribute('d', originalPathData);
                 } else {
-                    // Use the same curve generation as the original pen tool
-                    for (let i = 1; i < points.length - 1; i++) {
-                        const currentPoint = points[i];
-                        const nextPoint = points[i + 1];
-                        const controlX = (currentPoint.x + nextPoint.x) / 2;
-                        const controlY = (currentPoint.y + nextPoint.y) / 2;
-                        
-                        if (i === 1) {
-                            pathData += ` Q ${currentPoint.x} ${currentPoint.y} ${controlX} ${controlY}`;
-                        } else {
-                            pathData += ` T ${controlX} ${controlY}`;
+                    // Create high-fidelity path data using cubic Bezier curves for smoother results
+                    let pathData = `M ${points[0].x} ${points[0].y}`;
+                    
+                    if (points.length === 2) {
+                        pathData += ` L ${points[1].x} ${points[1].y}`;
+                    } else if (points.length === 3) {
+                        // Use quadratic curve for 3 points
+                        pathData += ` Q ${points[1].x} ${points[1].y} ${points[2].x} ${points[2].y}`;
+                    } else {
+                        // Use cubic Bezier curves for better curve preservation
+                        for (let i = 1; i < points.length; i += 3) {
+                            if (i + 2 < points.length) {
+                                // Full cubic Bezier curve
+                                pathData += ` C ${points[i].x} ${points[i].y} ${points[i + 1].x} ${points[i + 1].y} ${points[i + 2].x} ${points[i + 2].y}`;
+                            } else if (i + 1 < points.length) {
+                                // Quadratic curve for remaining points
+                                pathData += ` Q ${points[i].x} ${points[i].y} ${points[i + 1].x} ${points[i + 1].y}`;
+                            } else {
+                                // Line to last point
+                                pathData += ` L ${points[i].x} ${points[i].y}`;
+                            }
                         }
                     }
                     
-                    // Add the last point
-                    const lastPoint = points[points.length - 1];
-                    pathData += ` T ${lastPoint.x} ${lastPoint.y}`;
+                    path.setAttribute('d', pathData);
                 }
-                
-                path.setAttribute('d', pathData);
                 
                 Object.keys(attributes).forEach(attr => {
                     if (attributes[attr]) {
@@ -1499,10 +1696,13 @@ class TeamManager {
         let isDragging = false;
         let startX, startY, initialX, initialY;
         
-        const header = element.querySelector('.tools-header');
-        if (!header) return;
-        
-        header.addEventListener('mousedown', (e) => {
+        // Allow dragging from the entire panel, not just the header
+        element.addEventListener('mousedown', (e) => {
+            // Don't start dragging if clicking on interactive elements
+            if (e.target.closest('button, input, select, textarea, .tool-btn, .action-btn')) {
+                return;
+            }
+            
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;
@@ -1512,6 +1712,7 @@ class TeamManager {
             initialY = rect.top;
             
             element.style.transition = 'none';
+            element.style.cursor = 'grabbing';
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
             e.preventDefault();
@@ -1541,6 +1742,7 @@ class TeamManager {
         function handleMouseUp() {
             isDragging = false;
             element.style.transition = '';
+            element.style.cursor = '';
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         }
