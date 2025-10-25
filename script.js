@@ -6,13 +6,15 @@ class TeamManager {
     }
 
     // Custom prompt function to replace browser prompt()
-    showTextInputModal(title, placeholder = '', defaultValue = '', showDelete = false, defaultColor = '#3b82f6') {
+    showTextInputModal(title, placeholder = '', defaultValue = '', showDelete = false, defaultColor = '#3b82f6', defaultSize = 16) {
         return new Promise((resolve) => {
             const modal = document.getElementById('textInputModal');
             const overlay = document.getElementById('overlay');
             const titleElement = document.getElementById('textModalTitle');
             const input = document.getElementById('textInput');
             const colorInput = document.getElementById('textColorInput');
+            const sizeInput = document.getElementById('textSizeInput');
+            const sizeValue = document.getElementById('textSizeValue');
             const confirmBtn = document.getElementById('textModalConfirm');
             const cancelBtn = document.getElementById('textModalCancel');
             const closeBtn = document.getElementById('textModalClose');
@@ -23,9 +25,17 @@ class TeamManager {
             input.placeholder = placeholder;
             input.value = defaultValue;
             colorInput.value = defaultColor;
+            sizeInput.value = defaultSize;
+            sizeValue.textContent = defaultSize + 'px';
 
             // Show/hide delete button based on showDelete parameter
             deleteBtn.style.display = showDelete ? 'inline-block' : 'none';
+
+            // Update size value display when slider changes
+            const updateSizeValue = () => {
+                sizeValue.textContent = sizeInput.value + 'px';
+            };
+            sizeInput.addEventListener('input', updateSizeValue);
 
             // Show modal
             modal.style.display = 'block';
@@ -37,8 +47,9 @@ class TeamManager {
             const handleConfirm = () => {
                 const value = input.value.trim();
                 const color = colorInput.value;
+                const size = parseInt(sizeInput.value);
                 hideModal();
-                resolve({ text: value || null, color: color });
+                resolve({ text: value || null, color: color, size: size });
             };
 
             // Handle cancel
@@ -64,6 +75,7 @@ class TeamManager {
                 deleteBtn.removeEventListener('click', handleDelete);
                 overlay.removeEventListener('click', handleCancel);
                 input.removeEventListener('keydown', handleKeydown);
+                sizeInput.removeEventListener('input', updateSizeValue);
             };
 
             // Handle keyboard events
@@ -836,6 +848,40 @@ class TeamManager {
             });
         }
 
+        // Tactical info button
+        const tacticalInfoBtn = document.getElementById('tacticalInfoBtn');
+        const tacticalInfoModal = document.getElementById('tacticalInfoModal');
+        const tacticalInfoModalClose = document.getElementById('tacticalInfoModalClose');
+        const tacticalInfoModalOk = document.getElementById('tacticalInfoModalOk');
+        const overlay = document.getElementById('overlay');
+
+        if (tacticalInfoBtn && tacticalInfoModal) {
+            tacticalInfoBtn.addEventListener('click', () => {
+                tacticalInfoModal.style.display = 'block';
+                overlay.style.display = 'block';
+            });
+
+            const closeInfoModal = () => {
+                tacticalInfoModal.style.display = 'none';
+                overlay.style.display = 'none';
+            };
+
+            if (tacticalInfoModalClose) {
+                tacticalInfoModalClose.addEventListener('click', closeInfoModal);
+            }
+
+            if (tacticalInfoModalOk) {
+                tacticalInfoModalOk.addEventListener('click', closeInfoModal);
+            }
+
+            // Close modal when clicking on overlay
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeInfoModal();
+                }
+            });
+        }
+
         // Setup tool buttons
         const toolButtons = document.querySelectorAll('.tool-btn');
         toolButtons.forEach(btn => {
@@ -892,15 +938,28 @@ class TeamManager {
                     const tagName = element.tagName.toLowerCase();
                     
                     if (tagName === 'line') {
-                        if (cutLineWithCircle(element, x, y, radius, canvas)) {
+                        // Check if line intersects with eraser circle and remove completely
+                        if (lineIntersectsCircle(element, x, y, radius)) {
+                            element.remove();
                             hasChanges = true;
                         }
                     } else if (tagName === 'path') {
+                        // For path elements (hand-drawn), cut only the parts within the eraser circle
                         if (cutPathWithCircle(element, x, y, radius, canvas)) {
                             hasChanges = true;
                         }
+                    } else if (tagName === 'text') {
+                        // For text elements, check if the text position is within the eraser circle
+                        const textX = parseFloat(element.getAttribute('x')) || 0;
+                        const textY = parseFloat(element.getAttribute('y')) || 0;
+                        const distance = Math.sqrt((textX - x) ** 2 + (textY - y) ** 2);
+                        
+                        if (distance <= radius) {
+                            element.remove();
+                            hasChanges = true;
+                        }
                     } else {
-                        // For other elements (circles, rectangles), use original logic
+                        // For other elements (circles, rectangles, arrows), use original logic
                         if (isElementInCircle(element, x, y, radius)) {
                             element.remove();
                             hasChanges = true;
@@ -970,58 +1029,58 @@ class TeamManager {
                 const pathData = path.getAttribute('d');
                 if (!pathData) return false;
                 
-                // Check if the path intersects with the eraser circle by testing the actual path
-                const pathElement = path.cloneNode(true);
-                const pathLength = pathElement.getTotalLength ? pathElement.getTotalLength() : 0;
+                // Parse path data to get segments with curve information
+                const segments = parsePathData(pathData);
+                if (segments.length < 2) return false;
                 
-                if (pathLength === 0) return false;
-                
-                // Sample points along the path to check for intersection
-                const sampleCount = Math.max(50, Math.floor(pathLength / 2));
+                // Check if any part of the path intersects with the circle
                 let hasIntersection = false;
-                const intersectionRanges = [];
-                let currentRange = null;
+                const segmentStates = []; // Track which segments are inside/outside
                 
-                for (let i = 0; i <= sampleCount; i++) {
-                    const t = i / sampleCount;
-                    const point = pathElement.getPointAtLength ? pathElement.getPointAtLength(t * pathLength) : null;
+                for (let i = 0; i < segments.length; i++) {
+                    const segment = segments[i];
+                    const distanceFromCenter = Math.sqrt(
+                        (segment.x - centerX) ** 2 + (segment.y - centerY) ** 2
+                    );
                     
-                    if (point) {
-                        const distance = Math.sqrt(
-                            (point.x - centerX) ** 2 + (point.y - centerY) ** 2
-                        );
-                        const isInside = distance <= radius;
-                        
-                        if (isInside) {
-                            hasIntersection = true;
-                            if (!currentRange) {
-                                currentRange = { start: t, end: t };
-                            } else {
-                                currentRange.end = t;
-                            }
-                        } else {
-                            if (currentRange) {
-                                intersectionRanges.push(currentRange);
-                                currentRange = null;
-                            }
-                        }
+                    const isInside = distanceFromCenter <= radius;
+                    segmentStates.push(isInside);
+                    
+                    if (isInside) {
+                        hasIntersection = true;
                     }
                 }
                 
-                // Add final range if it exists
-                if (currentRange) {
-                    intersectionRanges.push(currentRange);
-                }
-                
-                // If no intersection, no changes needed
+                // If no intersection, don't modify the path
                 if (!hasIntersection) {
                     return false;
                 }
                 
-                // If the entire path is inside the circle, remove it
-                if (intersectionRanges.length === 1 && 
-                    intersectionRanges[0].start <= 0.01 && 
-                    intersectionRanges[0].end >= 0.99) {
+                // Find continuous groups of segments outside the circle
+                const pathGroups = [];
+                let currentGroup = [];
+                
+                for (let i = 0; i < segments.length; i++) {
+                    const isOutside = !segmentStates[i];
+                    
+                    if (isOutside) {
+                        currentGroup.push(segments[i]);
+                    } else {
+                        // Inside the circle - end current group if it exists
+                        if (currentGroup.length > 0) {
+                            pathGroups.push([...currentGroup]);
+                            currentGroup = [];
+                        }
+                    }
+                }
+                
+                // Add the last group if it exists
+                if (currentGroup.length > 0) {
+                    pathGroups.push(currentGroup);
+                }
+                
+                // If no valid groups remain, remove the entire path
+                if (pathGroups.length === 0) {
                     path.remove();
                     return true;
                 }
@@ -1034,31 +1093,62 @@ class TeamManager {
                     class: path.getAttribute('class')
                 };
                 
-                // Create segments for the parts that should remain
-                const segments = [];
-                let lastEnd = 0;
-                
-                intersectionRanges.forEach(range => {
-                    if (range.start > lastEnd + 0.01) {
-                        segments.push({ start: lastEnd, end: range.start });
+                // Create new paths for each group
+                if (pathGroups.length === 1) {
+                    // Single group - update the existing path
+                    const group = pathGroups[0];
+                    let newPathData = `M ${group[0].x} ${group[0].y}`;
+                    
+                    for (let i = 1; i < group.length; i++) {
+                        const segment = group[i];
+                        if (segment.type === 'Q' && segment.controlX !== undefined && segment.controlY !== undefined) {
+                            newPathData += ` Q ${segment.controlX} ${segment.controlY} ${segment.x} ${segment.y}`;
+                        } else if (segment.type === 'T') {
+                            // Convert T to Q to maintain curve shape
+                            const prevSegment = group[i-1];
+                            newPathData += ` Q ${prevSegment.x} ${prevSegment.y} ${segment.x} ${segment.y}`;
+                        } else {
+                            newPathData += ` L ${segment.x} ${segment.y}`;
+                        }
                     }
-                    lastEnd = range.end;
-                });
-                
-                // Add final segment if needed
-                if (lastEnd < 0.99) {
-                    segments.push({ start: lastEnd, end: 1 });
+                    
+                    path.setAttribute('d', newPathData);
+                } else {
+                    // Multiple groups - create separate paths
+                    path.remove(); // Remove original path
+                    
+                    pathGroups.forEach(group => {
+                        if (group.length > 0) {
+                            const newPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                            
+                            let pathData = `M ${group[0].x} ${group[0].y}`;
+                            
+                            for (let i = 1; i < group.length; i++) {
+                                const segment = group[i];
+                                if (segment.type === 'Q' && segment.controlX !== undefined && segment.controlY !== undefined) {
+                                    pathData += ` Q ${segment.controlX} ${segment.controlY} ${segment.x} ${segment.y}`;
+                                } else if (segment.type === 'T') {
+                                    // Convert T to Q to maintain curve shape
+                                    const prevSegment = group[i-1];
+                                    pathData += ` Q ${prevSegment.x} ${prevSegment.y} ${segment.x} ${segment.y}`;
+                                } else {
+                                    pathData += ` L ${segment.x} ${segment.y}`;
+                                }
+                            }
+                            
+                            newPath.setAttribute('d', pathData);
+                            
+                            // Apply original attributes
+                            Object.keys(pathAttributes).forEach(attr => {
+                                if (pathAttributes[attr]) {
+                                    newPath.setAttribute(attr, pathAttributes[attr]);
+                                }
+                            });
+                            
+                            canvas.appendChild(newPath);
+                        }
+                    });
                 }
-                
-                // Remove original path
-                path.remove();
-                
-                // Create new path segments preserving original curves
-                segments.forEach(segment => {
-                    if (segment.end - segment.start > 0.01) {
-                        createPathSegmentFromOriginal(canvas, pathElement, segment.start, segment.end, pathAttributes, pathLength);
-                    }
-                });
                 
                 return true;
             };
@@ -1080,62 +1170,30 @@ class TeamManager {
                 canvas.appendChild(line);
             };
             
-            // Helper function to create path segment from original path preserving curves
-            const createPathSegmentFromOriginal = (canvas, originalPath, startT, endT, attributes, pathLength) => {
-                if (!originalPath.getPointAtLength) return;
+            // Helper function to create path segment
+            const createPathSegment = (canvas, segments, attributes) => {
+                if (segments.length < 2) return;
                 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 
-                // Calculate segment length and determine appropriate sampling
-                const segmentLength = (endT - startT) * pathLength;
+                let pathData = `M ${segments[0].x} ${segments[0].y}`;
                 
-                // Use higher density sampling for better curve preservation
-                // Minimum 20 points, with more points for longer segments
-                const sampleCount = Math.max(20, Math.floor(segmentLength / 2));
-                const points = [];
-                
-                for (let i = 0; i <= sampleCount; i++) {
-                    const t = startT + (endT - startT) * (i / sampleCount);
-                    const point = originalPath.getPointAtLength(t * pathLength);
-                    if (point) {
-                        points.push({ x: point.x, y: point.y });
-                    }
-                }
-                
-                if (points.length < 2) return;
-                
-                // Try to extract and preserve the original path data structure
-                const originalPathData = originalPath.getAttribute('d');
-                if (originalPathData && segmentLength > pathLength * 0.8) {
-                    // If we're preserving most of the path, try to use the original path data
-                    path.setAttribute('d', originalPathData);
-                } else {
-                    // Create high-fidelity path data using cubic Bezier curves for smoother results
-                    let pathData = `M ${points[0].x} ${points[0].y}`;
+                for (let i = 1; i < segments.length; i++) {
+                    const segment = segments[i];
                     
-                    if (points.length === 2) {
-                        pathData += ` L ${points[1].x} ${points[1].y}`;
-                    } else if (points.length === 3) {
-                        // Use quadratic curve for 3 points
-                        pathData += ` Q ${points[1].x} ${points[1].y} ${points[2].x} ${points[2].y}`;
+                    if (segment.type === 'L') {
+                        pathData += ` L ${segment.x} ${segment.y}`;
+                    } else if (segment.type === 'Q') {
+                        pathData += ` Q ${segment.controlX} ${segment.controlY} ${segment.x} ${segment.y}`;
+                    } else if (segment.type === 'T') {
+                        pathData += ` T ${segment.x} ${segment.y}`;
                     } else {
-                        // Use cubic Bezier curves for better curve preservation
-                        for (let i = 1; i < points.length; i += 3) {
-                            if (i + 2 < points.length) {
-                                // Full cubic Bezier curve
-                                pathData += ` C ${points[i].x} ${points[i].y} ${points[i + 1].x} ${points[i + 1].y} ${points[i + 2].x} ${points[i + 2].y}`;
-                            } else if (i + 1 < points.length) {
-                                // Quadratic curve for remaining points
-                                pathData += ` Q ${points[i].x} ${points[i].y} ${points[i + 1].x} ${points[i + 1].y}`;
-                            } else {
-                                // Line to last point
-                                pathData += ` L ${points[i].x} ${points[i].y}`;
-                            }
-                        }
+                        // Default to line for any other type
+                        pathData += ` L ${segment.x} ${segment.y}`;
                     }
-                    
-                    path.setAttribute('d', pathData);
                 }
+                
+                path.setAttribute('d', pathData);
                 
                 Object.keys(attributes).forEach(attr => {
                     if (attributes[attr]) {
@@ -1148,10 +1206,10 @@ class TeamManager {
             
             // Parse SVG path data to extract points
             const parsePathData = (pathData) => {
-                const points = [];
+                const segments = [];
                 const commands = pathData.match(/[MmLlHhVvCcSsQqTtAaZz][^MmLlHhVvCcSsQqTtAaZz]*/g);
                 
-                if (!commands) return points;
+                if (!commands) return segments;
                 
                 let currentX = 0, currentY = 0;
                 let lastControlX = 0, lastControlY = 0;
@@ -1169,7 +1227,11 @@ class TeamManager {
                                 currentX += coords[i];
                                 currentY += coords[i + 1];
                             }
-                            points.push({ x: currentX, y: currentY });
+                            segments.push({ 
+                                type: 'M', 
+                                x: currentX, 
+                                y: currentY 
+                            });
                         }
                     } else if (type === 'L' || type === 'l') {
                         for (let i = 0; i < coords.length; i += 2) {
@@ -1180,7 +1242,11 @@ class TeamManager {
                                 currentX += coords[i];
                                 currentY += coords[i + 1];
                             }
-                            points.push({ x: currentX, y: currentY });
+                            segments.push({ 
+                                type: 'L', 
+                                x: currentX, 
+                                y: currentY 
+                            });
                         }
                     } else if (type === 'Q' || type === 'q') {
                         for (let i = 0; i < coords.length; i += 4) {
@@ -1195,7 +1261,13 @@ class TeamManager {
                                 currentX += coords[i + 2];
                                 currentY += coords[i + 3];
                             }
-                            points.push({ x: currentX, y: currentY });
+                            segments.push({ 
+                                type: 'Q', 
+                                x: currentX, 
+                                y: currentY,
+                                controlX: lastControlX,
+                                controlY: lastControlY
+                            });
                         }
                     } else if (type === 'T' || type === 't') {
                         for (let i = 0; i < coords.length; i += 2) {
@@ -1213,12 +1285,54 @@ class TeamManager {
                             
                             lastControlX = reflectedControlX;
                             lastControlY = reflectedControlY;
-                            points.push({ x: currentX, y: currentY });
+                            segments.push({ 
+                                type: 'T', 
+                                x: currentX, 
+                                y: currentY,
+                                controlX: lastControlX,
+                                controlY: lastControlY
+                            });
                         }
                     }
                 });
                 
-                return points;
+                return segments;
+            };
+            
+            // Check if line intersects with circle (for complete deletion)
+            const lineIntersectsCircle = (line, centerX, centerY, radius) => {
+                const x1 = parseFloat(line.getAttribute('x1'));
+                const y1 = parseFloat(line.getAttribute('y1'));
+                const x2 = parseFloat(line.getAttribute('x2'));
+                const y2 = parseFloat(line.getAttribute('y2'));
+                
+                // Expand radius for better sensitivity
+                const expandedRadius = radius * 1.2;
+                const intersections = getLineCircleIntersections(x1, y1, x2, y2, centerX, centerY, expandedRadius);
+                return intersections.length > 0;
+            };
+            
+            // Check if path intersects with circle (for complete deletion)
+            const pathIntersectsCircle = (path, centerX, centerY, radius) => {
+                const pathData = path.getAttribute('d');
+                if (!pathData) return false;
+                
+                const segments = parsePathData(pathData);
+                if (segments.length < 2) return false;
+                
+                // Check if any part of the path intersects with the circle
+                for (let i = 0; i < segments.length; i++) {
+                    const segment = segments[i];
+                    const distanceFromCenter = Math.sqrt(
+                        (segment.x - centerX) ** 2 + (segment.y - centerY) ** 2
+                    );
+                    
+                    if (distanceFromCenter <= radius) {
+                        return true;
+                    }
+                }
+                
+                return false;
             };
             
             // Calculate line-circle intersections
@@ -1263,17 +1377,93 @@ class TeamManager {
             
             // Check if element intersects with eraser circle (for non-line elements)
             const isElementInCircle = (element, centerX, centerY, radius) => {
+                const tagName = element.tagName.toLowerCase();
+                
+                // Special handling for arrow groups
+                if (tagName === 'g' && element.classList.contains('tactical-element')) {
+                    // For arrow groups, check if any child element intersects
+                    const children = element.children;
+                    for (let child of children) {
+                        if (child.tagName.toLowerCase() === 'line') {
+                            // Check if line intersects with circle
+                            const x1 = parseFloat(child.getAttribute('x1'));
+                            const y1 = parseFloat(child.getAttribute('y1'));
+                            const x2 = parseFloat(child.getAttribute('x2'));
+                            const y2 = parseFloat(child.getAttribute('y2'));
+                            
+                            const intersections = getLineCircleIntersections(x1, y1, x2, y2, centerX, centerY, radius);
+                            if (intersections.length > 0) {
+                                return true;
+                            }
+                        } else if (child.tagName.toLowerCase() === 'polygon') {
+                            // Check if arrow head polygon intersects with expanded radius
+                            const bbox = child.getBBox();
+                            const elementCenterX = bbox.x + bbox.width / 2;
+                            const elementCenterY = bbox.y + bbox.height / 2;
+                            
+                            const distance = Math.sqrt(
+                                Math.pow(elementCenterX - centerX, 2) + 
+                                Math.pow(elementCenterY - centerY, 2)
+                            );
+                            
+                            // Use expanded radius for better sensitivity
+                            if (distance <= radius * 1.5) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+                
+                // Improved logic for other elements with better sensitivity
                 const bbox = element.getBBox();
+                
+                // For circles, check if eraser circle overlaps with the shape
+                if (tagName === 'circle') {
+                    const elementCenterX = parseFloat(element.getAttribute('cx'));
+                    const elementCenterY = parseFloat(element.getAttribute('cy'));
+                    const elementRadius = parseFloat(element.getAttribute('r'));
+                    
+                    const distance = Math.sqrt(
+                        Math.pow(elementCenterX - centerX, 2) + 
+                        Math.pow(elementCenterY - centerY, 2)
+                    );
+                    
+                    // Check if circles overlap (distance between centers < sum of radii)
+                    return distance <= (radius + elementRadius);
+                }
+                
+                // For rectangles and other shapes, check if eraser circle intersects with the bounding box
+                if (tagName === 'rect') {
+                    const rectX = parseFloat(element.getAttribute('x'));
+                    const rectY = parseFloat(element.getAttribute('y'));
+                    const rectWidth = parseFloat(element.getAttribute('width'));
+                    const rectHeight = parseFloat(element.getAttribute('height'));
+                    
+                    // Find closest point on rectangle to circle center
+                    const closestX = Math.max(rectX, Math.min(centerX, rectX + rectWidth));
+                    const closestY = Math.max(rectY, Math.min(centerY, rectY + rectHeight));
+                    
+                    const distance = Math.sqrt(
+                        Math.pow(closestX - centerX, 2) + 
+                        Math.pow(closestY - centerY, 2)
+                    );
+                    
+                    return distance <= radius;
+                }
+                
+                // For other elements, use bounding box center with expanded sensitivity
                 const elementCenterX = bbox.x + bbox.width / 2;
                 const elementCenterY = bbox.y + bbox.height / 2;
                 
-                // Check if element center is within circle
                 const distance = Math.sqrt(
                     Math.pow(elementCenterX - centerX, 2) + 
                     Math.pow(elementCenterY - centerY, 2)
                 );
                 
-                return distance <= radius;
+                // Use expanded radius for better sensitivity
+                const expandedRadius = radius + Math.max(bbox.width, bbox.height) * 0.3;
+                return distance <= expandedRadius;
             };
             
             tacticalCanvas.addEventListener('mousedown', (e) => {
@@ -1556,10 +1746,14 @@ class TeamManager {
         let isDragging = false;
         let startX, startY, initialX, initialY;
         
-        const header = element.querySelector('.tools-header');
-        if (!header) return;
-        
-        header.addEventListener('mousedown', (e) => {
+        // Make the entire panel draggable, not just the header
+        element.addEventListener('mousedown', (e) => {
+            // Don't start dragging if clicking on interactive elements
+            if (e.target.matches('button, input, select, textarea, .tool-btn, .btn') || 
+                e.target.closest('button, input, select, textarea, .tool-btn, .btn')) {
+                return;
+            }
+            
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;
@@ -1569,6 +1763,7 @@ class TeamManager {
             initialY = rect.top;
             
             element.style.transition = 'none';
+            element.style.userSelect = 'none'; // Prevent text selection while dragging
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
             e.preventDefault();
@@ -1598,6 +1793,7 @@ class TeamManager {
         function handleMouseUp() {
             isDragging = false;
             element.style.transition = '';
+            element.style.userSelect = ''; // Re-enable text selection
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         }
@@ -1705,7 +1901,7 @@ class TeamManager {
         textElement.setAttribute('x', x);
         textElement.setAttribute('y', y);
         textElement.setAttribute('fill', result.color);
-        textElement.setAttribute('font-size', '14');
+        textElement.setAttribute('font-size', result.size || 16);
         textElement.setAttribute('font-family', 'Arial, sans-serif');
         textElement.setAttribute('font-weight', 'bold');
         textElement.textContent = result.text;
@@ -1726,16 +1922,18 @@ class TeamManager {
         textElement.addEventListener('dblclick', async (e) => {
             e.stopPropagation();
             const currentColor = textElement.getAttribute('fill') || '#3b82f6';
-            const result = await this.showTextInputModal('Modifica il testo:', 'Scrivi qui il testo...', textElement.textContent, true, currentColor);
+            const currentSize = parseInt(textElement.getAttribute('font-size')) || 16;
+            const result = await this.showTextInputModal('Modifica il testo:', 'Scrivi qui il testo...', textElement.textContent, true, currentColor, currentSize);
             
             if (result === 'DELETE') {
                 // Delete the text element
                 textElement.remove();
                 this.saveToHistory(canvas);
             } else if (result !== null && result.text !== '') {
-                // Update the text content and color
+                // Update the text content, color, and size
                 textElement.textContent = result.text;
                 textElement.setAttribute('fill', result.color);
+                textElement.setAttribute('font-size', result.size || currentSize);
                 this.saveToHistory(canvas);
             }
         });

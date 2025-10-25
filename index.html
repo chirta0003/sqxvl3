@@ -110,9 +110,14 @@
                 <div class="tactical-tools-panel" id="tacticalToolsPanel" style="display: none;">
                     <div class="tools-header">
                         <h3><i class="fas fa-palette"></i> Strumenti Tattici</h3>
-                        <button class="btn btn-sm btn-danger" id="closeTacticalMode">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <div class="header-buttons">
+                            <button class="btn btn-sm btn-info" id="tacticalInfoBtn" title="Informazioni e Guida">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" id="closeTacticalMode">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="tools-section">
@@ -359,6 +364,11 @@
                     <label for="textColorInput">Colore Testo</label>
                     <input type="color" id="textColorInput" value="#3b82f6">
                 </div>
+                <div class="form-group">
+                    <label for="textSizeInput">Dimensione Testo (px)</label>
+                    <input type="range" id="textSizeInput" min="8" max="72" value="16" step="1">
+                    <span id="textSizeValue">16px</span>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="textModalDelete" style="display: none;">
@@ -367,6 +377,152 @@
                 </button>
                 <button type="button" class="btn btn-secondary" id="textModalCancel">Annulla</button>
                 <button type="button" class="btn btn-primary" id="textModalConfirm">Conferma</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tactical Info Modal -->
+    <div class="modal" id="tacticalInfoModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-info-circle"></i> Guida alla Modalità Tattica</h2>
+                <button class="modal-close" id="tacticalInfoModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3><i class="fas fa-palette"></i> Strumenti di Disegno</h3>
+                    <div class="tool-info">
+                        <div class="tool-item">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <div>
+                                <strong>Seleziona:</strong> Clicca per selezionare e trascinare elementi esistenti. Usa <kbd>Canc</kbd> o <kbd>Backspace</kbd> per eliminare l'elemento selezionato.
+                            </div>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fas fa-minus"></i>
+                            <div>
+                                <strong>Linea:</strong> Clicca e trascina per disegnare linee rette. Perfetto per indicare movimenti o posizioni.
+                            </div>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fas fa-arrow-right"></i>
+                            <div>
+                                <strong>Freccia:</strong> Clicca e trascina per disegnare frecce direzionali. Ideale per indicare direzioni di movimento o passaggi.
+                            </div>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fas fa-circle"></i>
+                            <div>
+                                <strong>Cerchio:</strong> Clicca e trascina per disegnare cerchi. Utile per evidenziare aree o posizioni specifiche.
+                            </div>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fas fa-square"></i>
+                            <div>
+                                <strong>Rettangolo:</strong> Clicca e trascina per disegnare rettangoli. Perfetto per delimitare zone di campo.
+                            </div>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fas fa-font"></i>
+                            <div>
+                                <strong>Testo:</strong> Clicca per aggiungere testo personalizzato. Puoi modificare colore e dimensione. Doppio clic per modificare testo esistente.
+                            </div>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fas fa-pen"></i>
+                            <div>
+                                <strong>Penna:</strong> Disegno a mano libera. Clicca e trascina per creare linee curve e forme personalizzate.
+                            </div>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fas fa-eraser"></i>
+                            <div>
+                                <strong>Gomma:</strong> Clicca e trascina per cancellare parti di disegni. Funziona su tutti gli elementi tattici.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3><i class="fas fa-cog"></i> Proprietà e Personalizzazione</h3>
+                    <div class="property-info">
+                        <div class="property-item">
+                            <strong>Colore:</strong> Cambia il colore di linee, frecce e forme prima di disegnarle.
+                        </div>
+                        <div class="property-item">
+                            <strong>Spessore:</strong> Regola lo spessore delle linee da 1 a 10 pixel.
+                        </div>
+                        <div class="property-item">
+                            <strong>Riempimento:</strong> Attiva per riempire cerchi e rettangoli con il colore selezionato.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3><i class="fas fa-keyboard"></i> Scorciatoie da Tastiera</h3>
+                    <div class="shortcuts-info">
+                        <div class="shortcut-item">
+                            <kbd>Canc</kbd> / <kbd>Backspace</kbd> - Elimina elemento selezionato
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl + Z</kbd> - Annulla ultima azione
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Ctrl + Y</kbd> - Ripeti azione annullata
+                        </div>
+                        <div class="shortcut-item">
+                            <kbd>Esc</kbd> - Deseleziona elemento corrente
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3><i class="fas fa-tools"></i> Azioni Rapide</h3>
+                    <div class="action-info">
+                        <div class="action-item">
+                            <i class="fas fa-undo"></i>
+                            <div>
+                                <strong>Annulla:</strong> Torna indietro di un'azione. Puoi annullare più azioni consecutive.
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <i class="fas fa-redo"></i>
+                            <div>
+                                <strong>Ripeti:</strong> Ripete l'ultima azione annullata.
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <i class="fas fa-trash"></i>
+                            <div>
+                                <strong>Cancella Tutto:</strong> Rimuove tutti gli elementi tattici dal campo. <em>Attenzione: questa azione non può essere annullata!</em>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3><i class="fas fa-lightbulb"></i> Suggerimenti</h3>
+                    <div class="tips-info">
+                        <div class="tip-item">
+                            💡 <strong>Combinazioni:</strong> Usa frecce per i movimenti, cerchi per le posizioni chiave e testo per le note tattiche.
+                        </div>
+                        <div class="tip-item">
+                            💡 <strong>Colori:</strong> Usa colori diversi per distinguere giocatori, ruoli o fasi di gioco.
+                        </div>
+                        <div class="tip-item">
+                            💡 <strong>Precisione:</strong> Per linee perfettamente dritte, usa lo strumento Linea invece della Penna.
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="tacticalInfoModalOk">
+                    <i class="fas fa-check"></i>
+                    Ho Capito
+                </button>
             </div>
         </div>
     </div>
