@@ -970,6 +970,7 @@ class TeamManager {
         let isDrawing = false;
         let startPoint = null;
         let selectedElement = null;
+        let eraserPreview = null; // For eraser preview circle - declare at function scope
         
         // History for undo/redo functionality
         let drawingHistory = [];
@@ -1084,7 +1085,6 @@ class TeamManager {
         if (tacticalCanvas) {
             let currentPath = null; // For pen tool
             let pathPoints = []; // Store points for pen drawing
-            let eraserPreview = null; // For eraser preview circle
             
             // Create eraser preview circle
             const createEraserPreview = (canvas) => {
@@ -2870,6 +2870,11 @@ class TeamManager {
     }
 
     insertSelectedPlayers() {
+        // Initialize selectedPlayers if it doesn't exist
+        if (!this.selectedPlayers) {
+            this.selectedPlayers = new Set();
+        }
+        
         if (this.selectedPlayers.size === 0) return;
         
         const players = window.playerManager.getPlayers();
