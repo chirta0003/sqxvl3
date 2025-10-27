@@ -1027,6 +1027,15 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
+      "id": 167,
+      "name": "Falco",
+      "position": "ATTACCANTE",
+      "squad": "gear 7",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
       "id": 110,
       "name": "Guddo",
       "position": "PORTIERE",
@@ -1498,7 +1507,7 @@
   "metadata": {
     "version": "1.0",
     "last_updated": "2024-12-19T12:00:00Z",
-    "total_players": 166,
+    "total_players": 167,
     "squads": [
       "alpak",
       "bigbro",
