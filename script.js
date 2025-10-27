@@ -119,6 +119,11 @@ class TeamManager {
         document.getElementById('teamDisplayMode').addEventListener('change', (e) => {
             this.handleTeamDisplayModeChange(e.target.value);
         });
+
+        // Grid View button
+        document.getElementById('gridViewBtn').addEventListener('click', () => {
+            this.openGridView();
+        });
     }
 
     setupDragAndDrop() {
@@ -315,6 +320,12 @@ class TeamManager {
         if (poolCard) {
             poolCard.remove();
         }
+        
+        // Re-render grid view if it's open to remove the player from the grid
+        const gridViewModal = document.getElementById('gridViewModal');
+        if (gridViewModal && gridViewModal.style.display !== 'none') {
+            this.renderGridPlayers();
+        }
 
         this.draggedPlayer = null;
         this.dragOffset = null;
@@ -377,6 +388,12 @@ class TeamManager {
         if (poolCard) {
             poolCard.remove();
         }
+        
+        // Re-render grid view if it's open to remove the player from the grid
+        const gridViewModalField = document.getElementById('gridViewModal');
+        if (gridViewModalField && gridViewModalField.style.display !== 'none') {
+            this.renderGridPlayers();
+        }
 
         this.draggedPlayer = null;
         this.dragOffset = null;
@@ -388,6 +405,12 @@ class TeamManager {
         
         // Re-render player pool to show the returned player
         this.renderPlayerPool();
+        
+        // Re-render grid view if it's open to show the returned player
+        const gridViewModalReturn = document.getElementById('gridViewModal');
+        if (gridViewModalReturn && gridViewModalReturn.style.display !== 'none') {
+            this.renderGridPlayers();
+        }
     }
 
     handlePlayerPoolDrop(e) {
@@ -486,8 +509,8 @@ class TeamManager {
             }
             // For 'all' mode, we don't filter by team display mode - show all teams
             
-            // Remove players that are already on the field
-            const playersOnField = Array.from(document.querySelectorAll('#footballField .player-card'))
+            // Remove players that are already on the field or field container
+            const playersOnField = Array.from(document.querySelectorAll('#footballField .player-card, .field-container .player-card'))
                 .map(card => card.dataset.playerId);
             filteredPlayers = filteredPlayers.filter(player => 
                 !playersOnField.includes(player.id)
@@ -714,6 +737,161 @@ class TeamManager {
         });
     
         card.addEventListener('dragend', () => {
+            this.draggedPlayer = null;
+            this.dragOffset = null;
+        });
+
+        // Add touch event listeners for mobile drag and drop
+        let touchStarted = false;
+        let touchOffset = null;
+        let ghostCard = null;
+
+        card.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            touchStarted = true;
+            this.draggedPlayer = player;
+            
+            const touch = e.touches[0];
+            const cardRect = card.getBoundingClientRect();
+            
+            // Calculate touch offset
+            touchOffset = {
+                x: touch.clientX - cardRect.left,
+                y: touch.clientY - cardRect.top
+            };
+            this.dragOffset = touchOffset;
+            
+            // Create ghost card for visual feedback
+            ghostCard = card.cloneNode(true);
+            ghostCard.className = 'drag-preview player-card touch-ghost';
+            ghostCard.style.cssText = `
+                position: fixed;
+                width: 120px;
+                height: 160px;
+                transform: scale(0.9) rotate(5deg);
+                opacity: 0.8;
+                pointer-events: none;
+                z-index: 10000;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+                border: 2px solid #fff;
+                left: ${touch.clientX - touchOffset.x}px;
+                top: ${touch.clientY - touchOffset.y}px;
+            `;
+            
+            ghostCard.classList.add(positionClass);
+            document.body.appendChild(ghostCard);
+            
+            // Add visual feedback to original card
+            card.style.opacity = '0.5';
+            card.style.transform = 'scale(0.95)';
+        });
+
+        card.addEventListener('touchmove', (e) => {
+            if (!touchStarted || !ghostCard) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            
+            // Update ghost card position
+            ghostCard.style.left = `${touch.clientX - touchOffset.x}px`;
+            ghostCard.style.top = `${touch.clientY - touchOffset.y}px`;
+            
+            // Check what element is under the touch
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            // Remove previous drag-over classes
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            
+            // Add drag-over class to valid drop zones
+            if (elementBelow) {
+                const field = elementBelow.closest('#footballField');
+                const fieldContainer = elementBelow.closest('.field-container');
+                const playerPool = elementBelow.closest('#playerPool');
+                
+                if (field) {
+                    field.classList.add('drag-over');
+                } else if (fieldContainer) {
+                    fieldContainer.classList.add('drag-over');
+                } else if (playerPool) {
+                    playerPool.classList.add('drag-over');
+                }
+            }
+        });
+
+        card.addEventListener('touchend', (e) => {
+            if (!touchStarted) return;
+            e.preventDefault();
+            
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            // Clean up
+            if (ghostCard) {
+                ghostCard.remove();
+                ghostCard = null;
+            }
+            
+            // Reset original card appearance
+            card.style.opacity = '';
+            card.style.transform = '';
+            
+            // Remove drag-over classes
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            
+            // Handle drop
+            if (elementBelow) {
+                const field = elementBelow.closest('#footballField');
+                const fieldContainer = elementBelow.closest('.field-container');
+                const playerPool = elementBelow.closest('#playerPool');
+                
+                if (field) {
+                    // Simulate drop event for field
+                    const dropEvent = {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY,
+                        preventDefault: () => {}
+                    };
+                    this.handleFieldDrop(dropEvent);
+                } else if (fieldContainer && !field) {
+                    // Simulate drop event for field container
+                    const dropEvent = {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY,
+                        preventDefault: () => {}
+                    };
+                    this.handleFieldContainerDrop(dropEvent);
+                } else if (playerPool) {
+                    // Simulate drop event for player pool
+                    const dropEvent = {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY,
+                        preventDefault: () => {}
+                    };
+                    this.handlePlayerPoolDrop(dropEvent);
+                }
+            }
+            
+            // Reset touch state
+            touchStarted = false;
+            touchOffset = null;
+            this.draggedPlayer = null;
+            this.dragOffset = null;
+        });
+
+        card.addEventListener('touchcancel', () => {
+            // Clean up on touch cancel
+            if (ghostCard) {
+                ghostCard.remove();
+                ghostCard = null;
+            }
+            
+            card.style.opacity = '';
+            card.style.transform = '';
+            
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            
+            touchStarted = false;
+            touchOffset = null;
             this.draggedPlayer = null;
             this.dragOffset = null;
         });
@@ -1536,6 +1714,68 @@ class TeamManager {
                 };
             });
 
+            // Add touch event listeners for tactical canvas
+            tacticalCanvas.addEventListener('touchstart', (e) => {
+                if (!tacticalMode) return;
+                e.preventDefault();
+                
+                const touch = e.touches[0];
+                const rect = tacticalCanvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                
+                if (currentTool === 'eraser') {
+                    // Handle eraser tool
+                    const strokeWidth = parseInt(document.getElementById('strokeWidth').value);
+                    const radius = strokeWidth * 5;
+                    
+                    eraseElements(tacticalCanvas, x, y, radius);
+                    isDrawing = true;
+                    return;
+                }
+                
+                if (currentTool === 'select') {
+                    // Handle selection
+                    const clickedElement = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (clickedElement && clickedElement.classList.contains('tactical-element')) {
+                        // Deselect previous element
+                        if (selectedElement) {
+                            selectedElement.classList.remove('selected');
+                        }
+                        // Select new element
+                        selectedElement = clickedElement;
+                        selectedElement.classList.add('selected');
+                    } else {
+                        // Deselect if touching empty space
+                        if (selectedElement) {
+                            selectedElement.classList.remove('selected');
+                            selectedElement = null;
+                        }
+                    }
+                    return;
+                }
+                
+                if (currentTool === 'text') {
+                    // Handle text tool
+                    this.addTextElement(tacticalCanvas, x, y).then(() => {
+                        this.saveToHistory(tacticalCanvas);
+                    });
+                    return;
+                }
+                
+                if (currentTool === 'pen') {
+                    // Handle pen tool - start new path
+                    const point = { x, y };
+                    pathPoints = [point];
+                    currentPath = this.createPenPath(tacticalCanvas, pathPoints);
+                    isDrawing = true;
+                    return;
+                }
+                
+                isDrawing = true;
+                startPoint = { x, y };
+            });
+
             tacticalCanvas.addEventListener('mousemove', (e) => {
                 const rect = tacticalCanvas.getBoundingClientRect();
                 const currentPoint = {
@@ -1585,6 +1825,44 @@ class TeamManager {
                 this.drawTacticalElement(tacticalCanvas, currentTool, startPoint, currentPoint, true);
             });
 
+            tacticalCanvas.addEventListener('touchmove', (e) => {
+                if (!tacticalMode || !isDrawing) return;
+                e.preventDefault();
+                
+                const touch = e.touches[0];
+                const rect = tacticalCanvas.getBoundingClientRect();
+                const currentPoint = {
+                    x: touch.clientX - rect.left,
+                    y: touch.clientY - rect.top
+                };
+                
+                if (currentTool === 'eraser') {
+                    // Continue erasing
+                    const strokeWidth = parseInt(document.getElementById('strokeWidth').value);
+                    const radius = strokeWidth * 5;
+                    eraseElements(tacticalCanvas, currentPoint.x, currentPoint.y, radius);
+                    return;
+                }
+                
+                if (currentTool === 'select' || currentTool === 'text') return;
+                
+                if (currentTool === 'pen') {
+                    // Handle pen tool - add point to path
+                    pathPoints.push(currentPoint);
+                    this.updatePenPath(currentPath, pathPoints);
+                    return;
+                }
+                
+                if (!startPoint) return;
+                
+                // Remove temporary elements
+                const tempElements = tacticalCanvas.querySelectorAll('.temp-element');
+                tempElements.forEach(el => el.remove());
+                
+                // Draw temporary element based on current tool
+                this.drawTacticalElement(tacticalCanvas, currentTool, startPoint, currentPoint, true);
+            });
+
             tacticalCanvas.addEventListener('mouseup', (e) => {
                 if (currentTool === 'eraser') {
                     isDrawing = false;
@@ -1614,6 +1892,54 @@ class TeamManager {
                 const endPoint = {
                     x: e.clientX - rect.left,
                     y: e.clientY - rect.top
+                };
+                
+                // Remove temporary elements
+                const tempElements = tacticalCanvas.querySelectorAll('.temp-element');
+                tempElements.forEach(el => el.remove());
+                
+                // Draw final element
+                this.drawTacticalElement(tacticalCanvas, currentTool, startPoint, endPoint, false);
+                
+                // Save to history
+                this.saveToHistory(tacticalCanvas);
+                
+                isDrawing = false;
+                startPoint = null;
+            });
+
+            tacticalCanvas.addEventListener('touchend', (e) => {
+                if (!tacticalMode) return;
+                e.preventDefault();
+                
+                if (currentTool === 'eraser') {
+                    isDrawing = false;
+                    eraserSessionActive = false;
+                    return;
+                }
+                
+                if (!isDrawing || currentTool === 'select' || currentTool === 'text') return;
+                
+                if (currentTool === 'pen') {
+                    // Handle pen tool - finalize path
+                    if (currentPath) {
+                        currentPath.classList.remove('temp-element');
+                        currentPath.classList.add('tactical-element');
+                        this.saveToHistory(tacticalCanvas);
+                    }
+                    currentPath = null;
+                    pathPoints = [];
+                    isDrawing = false;
+                    return;
+                }
+                
+                if (!startPoint) return;
+                
+                const touch = e.changedTouches[0];
+                const rect = tacticalCanvas.getBoundingClientRect();
+                const endPoint = {
+                    x: touch.clientX - rect.left,
+                    y: touch.clientY - rect.top
                 };
                 
                 // Remove temporary elements
@@ -2026,6 +2352,7 @@ class TeamManager {
         roleToggleBtn.addEventListener('click', () => {
             this.rolesVisible = !this.rolesVisible;
             this.updateRoleToggleButton();
+            this.updateGridRoleToggleButton(); // Sync grid button
             this.toggleRoleVisibility(this.rolesVisible);
             
             // Save state to localStorage
@@ -2055,6 +2382,32 @@ class TeamManager {
             icon.className = 'fas fa-eye-slash';
             roleToggleBtn.title = 'Clicca per mostrare i ruoli dei giocatori';
         }
+    }
+
+    // Update the visual state of the grid role toggle button
+    updateGridRoleToggleButton() {
+        const gridRoleToggleBtn = document.getElementById('gridRoleToggleBtn');
+        if (!gridRoleToggleBtn) return;
+        
+        const toggleText = gridRoleToggleBtn.querySelector('.toggle-text');
+        const icon = gridRoleToggleBtn.querySelector('.fas');
+
+        if (this.rolesVisible) {
+            gridRoleToggleBtn.classList.remove('off');
+            toggleText.textContent = 'ON';
+            icon.className = 'fas fa-eye';
+            gridRoleToggleBtn.title = 'Clicca per nascondere i ruoli dei giocatori';
+        } else {
+            gridRoleToggleBtn.classList.add('off');
+            toggleText.textContent = 'OFF';
+            icon.className = 'fas fa-eye-slash';
+            gridRoleToggleBtn.title = 'Clicca per mostrare i ruoli dei giocatori';
+        }
+    }
+
+    // Update the main role toggle button from grid view
+    updateMainRoleToggleButton() {
+        this.updateRoleToggleButton();
     }
 
     // Toggle visibility of all position badges
@@ -2200,6 +2553,413 @@ class TeamManager {
             'FWD': '#96ceb4'
         };
         return colors[position] || '#95a5a6';
+    }
+
+    // Grid View functionality
+    openGridView() {
+        this.selectedPlayers = new Set();
+        this.isSelecting = false;
+        this.selectionStart = null;
+        this.selectionOverlay = null;
+        
+        const modal = document.getElementById('gridViewModal');
+        const overlay = document.getElementById('overlay');
+        
+        // Show modal
+        modal.style.display = 'block';
+        overlay.style.display = 'block';
+        
+        // Setup grid view
+        this.setupGridView();
+        this.renderGridPlayers();
+        this.updateSelectionCount();
+        
+        // Apply current role visibility state to grid
+        this.toggleRoleVisibility(this.rolesVisible);
+        
+        // Setup event listeners
+        this.setupGridEventListeners();
+    }
+
+    closeGridView() {
+        const modal = document.getElementById('gridViewModal');
+        const overlay = document.getElementById('overlay');
+        
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+        
+        // Clean up
+        this.selectedPlayers = null;
+        this.removeGridEventListeners();
+    }
+
+    setupGridView() {
+        // Copy filter values from main player pool
+        const mainSquadFilter = document.getElementById('playerSquadFilter')?.value || '';
+        const mainNameFilter = document.getElementById('playerNameFilter')?.value || '';
+        const mainPositionFilter = document.getElementById('playerPositionFilter')?.value || '';
+        
+        document.getElementById('gridSquadFilter').value = mainSquadFilter;
+        document.getElementById('gridNameFilter').value = mainNameFilter;
+        document.getElementById('gridPositionFilter').value = mainPositionFilter;
+        
+        // Sync grid role toggle button with main role toggle state
+        this.updateGridRoleToggleButton();
+    }
+
+    setupGridEventListeners() {
+        // Modal close buttons
+        document.getElementById('gridModalClose').addEventListener('click', () => this.closeGridView());
+        document.getElementById('gridModalCancel').addEventListener('click', () => this.closeGridView());
+        document.getElementById('overlay').addEventListener('click', () => this.closeGridView());
+        
+        // Filter events
+        document.getElementById('gridSquadFilter').addEventListener('change', () => this.renderGridPlayers());
+        document.getElementById('gridNameFilter').addEventListener('input', () => this.renderGridPlayers());
+        document.getElementById('gridPositionFilter').addEventListener('change', () => this.renderGridPlayers());
+        
+        // Grid role toggle button
+        const gridRoleToggleBtn = document.getElementById('gridRoleToggleBtn');
+        if (gridRoleToggleBtn) {
+            gridRoleToggleBtn.addEventListener('click', () => {
+                this.rolesVisible = !this.rolesVisible;
+                this.updateGridRoleToggleButton();
+                this.updateMainRoleToggleButton();
+                this.toggleRoleVisibility(this.rolesVisible);
+                
+                // Save state to localStorage
+                localStorage.setItem('roleToggleState', JSON.stringify(this.rolesVisible));
+                
+                // Show feedback notification
+                this.showRoleToggleNotification();
+            });
+        }
+        
+        // Selection actions
+        document.getElementById('selectAllBtn').addEventListener('click', () => this.selectAllPlayers());
+        document.getElementById('clearSelectionBtn').addEventListener('click', () => this.clearSelection());
+        document.getElementById('gridModalInsert').addEventListener('click', () => this.insertSelectedPlayers());
+        
+        // Keyboard events
+        document.addEventListener('keydown', this.handleGridKeydown.bind(this));
+    }
+
+    removeGridEventListeners() {
+        document.removeEventListener('keydown', this.handleGridKeydown.bind(this));
+    }
+
+    renderGridPlayers() {
+        const gridContainer = document.getElementById('gridContainer');
+        gridContainer.innerHTML = '';
+        
+        if (!window.playerManager) {
+            gridContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">Sistema di gestione giocatori in caricamento...</p>';
+            return;
+        }
+        
+        const players = window.playerManager.getPlayers();
+        const squadFilter = document.getElementById('gridSquadFilter')?.value || '';
+        const nameFilter = document.getElementById('gridNameFilter')?.value.toLowerCase() || '';
+        const positionFilter = document.getElementById('gridPositionFilter')?.value || '';
+        
+        // Filter players
+        let filteredPlayers = players.filter(player => {
+            const matchesSquad = !squadFilter || player.squad.toLowerCase() === squadFilter.toLowerCase();
+            const matchesName = !nameFilter || player.name.toLowerCase().includes(nameFilter);
+            const matchesPosition = !positionFilter || player.position === positionFilter;
+            return matchesSquad && matchesName && matchesPosition;
+        });
+        
+        // Apply team display mode filter
+        const teamDisplayMode = document.getElementById('teamDisplayMode')?.value;
+        if (teamDisplayMode === '1') {
+            const squad1Select = document.getElementById('squad1');
+            if (squad1Select?.value) {
+                filteredPlayers = filteredPlayers.filter(player => 
+                    player.squad.toLowerCase() === squad1Select.value.toLowerCase()
+                );
+            }
+        } else if (teamDisplayMode === '2') {
+            const squad1Select = document.getElementById('squad1');
+            const squad2Select = document.getElementById('squad2');
+            const selectedSquads = [];
+            if (squad1Select?.value) selectedSquads.push(squad1Select.value.toLowerCase());
+            if (squad2Select?.value) selectedSquads.push(squad2Select.value.toLowerCase());
+            
+            if (selectedSquads.length > 0) {
+                filteredPlayers = filteredPlayers.filter(player => 
+                    selectedSquads.includes(player.squad.toLowerCase())
+                );
+            }
+        }
+        
+        // Remove players already on field
+        const playersOnField = Array.from(document.querySelectorAll('#footballField .player-card, .field-container .player-card'))
+            .map(card => card.dataset.playerId);
+        filteredPlayers = filteredPlayers.filter(player => 
+            !playersOnField.includes(player.id)
+        );
+        
+        // Render grid cards
+        filteredPlayers.forEach(player => {
+            const card = this.createGridPlayerCard(player);
+            gridContainer.appendChild(card);
+        });
+        
+        if (filteredPlayers.length === 0) {
+            gridContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">Nessun giocatore disponibile.</p>';
+        }
+    }
+
+    createGridPlayerCard(player) {
+        const card = document.createElement('div');
+        card.className = 'grid-player-card';
+        card.dataset.playerId = player.id;
+        card.dataset.position = player.position;
+        
+        const maxNameLength = 12;
+        const displayName = player.name.length > maxNameLength
+            ? player.name.substring(0, maxNameLength) + '...'
+            : player.name;
+        
+        const teamLogo = this.getTeamLogo(player.squad);
+        
+        // Determine position class and abbreviated display name
+        let positionClass = '';
+        let positionDisplay = '';
+        switch(player.position) {
+            case 'PORTIERE':
+                positionClass = 'gk';
+                positionDisplay = 'GK';
+                break;
+            case 'DIFENSORE':
+                positionClass = 'def';
+                positionDisplay = 'DEF';
+                break;
+            case 'CENTROCAMPISTA':
+                positionClass = 'mid';
+                positionDisplay = 'MID';
+                break;
+            case 'ATTACCANTE':
+                positionClass = 'fwd';
+                positionDisplay = 'FWD';
+                break;
+            default:
+                positionClass = player.position.toLowerCase();
+                positionDisplay = player.position.substring(0, 3).toUpperCase();
+        }
+
+        // Add position class to the card for role-based styling
+        card.classList.add(positionClass);
+
+        // Check if roles should be hidden
+        const hiddenRoleClass = this.rolesVisible ? '' : ' hidden-role';
+        
+        card.innerHTML = `
+            <div class="selection-checkbox">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="player-card-header">
+                <div class="player-name-large" title="${player.name}">${displayName}</div>
+            </div>
+            ${teamLogo ? `<div class="team-logo">
+                <img src="${teamLogo}" alt="${player.squad} Logo">
+            </div>` : `<div class="team-logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>`}
+            <div class="position-badge ${positionClass}${hiddenRoleClass}">
+                ${positionDisplay}
+            </div>
+        `;
+
+        // Add wildcard star icon if player has wildcard set to "SI" or true
+        if (player.wildcard === 'SI' || player.wildcard === true) {
+            const wildcardStar = document.createElement('div');
+            wildcardStar.className = 'wildcard-star-btn';
+            wildcardStar.innerHTML = '<i class="fas fa-star"></i>';
+            wildcardStar.title = 'Wildcard Player';
+            card.appendChild(wildcardStar);
+        }
+        
+        // Add click event for selection
+        card.addEventListener('click', (e) => this.handleGridCardClick(e, player.id));
+        
+        return card;
+    }
+
+    handleGridCardClick(e, playerId) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const card = e.currentTarget;
+        
+        // Semplice toggle selection - non serve più Ctrl/Cmd
+        this.togglePlayerSelection(playerId, card);
+        
+        this.lastSelectedCard = card;
+        this.updateSelectionCount();
+    }
+
+    togglePlayerSelection(playerId, card) {
+        if (this.selectedPlayers.has(playerId)) {
+            this.selectedPlayers.delete(playerId);
+            card.classList.remove('selected');
+        } else {
+            this.selectedPlayers.add(playerId);
+            card.classList.add('selected');
+        }
+    }
+
+    selectRange(startCard, endCard) {
+        const gridContainer = document.getElementById('gridContainer');
+        const cards = Array.from(gridContainer.querySelectorAll('.grid-player-card'));
+        
+        const startIndex = cards.indexOf(startCard);
+        const endIndex = cards.indexOf(endCard);
+        
+        const minIndex = Math.min(startIndex, endIndex);
+        const maxIndex = Math.max(startIndex, endIndex);
+        
+        for (let i = minIndex; i <= maxIndex; i++) {
+            const card = cards[i];
+            const playerId = card.dataset.playerId;
+            this.selectedPlayers.add(playerId);
+            card.classList.add('selected');
+        }
+    }
+
+    selectAllPlayers() {
+        const cards = document.querySelectorAll('.grid-player-card');
+        cards.forEach(card => {
+            const playerId = card.dataset.playerId;
+            this.selectedPlayers.add(playerId);
+            card.classList.add('selected');
+        });
+        this.updateSelectionCount();
+    }
+
+    clearSelection() {
+        this.selectedPlayers.clear();
+        const cards = document.querySelectorAll('.grid-player-card');
+        cards.forEach(card => card.classList.remove('selected'));
+        this.updateSelectionCount();
+    }
+
+    updateSelectionCount() {
+        const count = this.selectedPlayers.size;
+        document.getElementById('selectedCount').textContent = count;
+        document.getElementById('insertCount').textContent = count;
+        
+        // Enable/disable insert button
+        const insertBtn = document.getElementById('gridModalInsert');
+        insertBtn.disabled = count === 0;
+        if (count === 0) {
+            insertBtn.classList.add('disabled');
+        } else {
+            insertBtn.classList.remove('disabled');
+        }
+    }
+
+    handleGridKeydown(e) {
+        if (e.key === 'Escape') {
+            this.closeGridView();
+        } else if (e.key === 'a' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            this.selectAllPlayers();
+        }
+    }
+
+    insertSelectedPlayers() {
+        if (this.selectedPlayers.size === 0) return;
+        
+        const players = window.playerManager.getPlayers();
+        const selectedPlayerData = players.filter(player => 
+            this.selectedPlayers.has(player.id)
+        );
+        
+        // Insert players into field container (gray area)
+        const fieldContainer = document.querySelector('.field-container');
+        let xOffset = 50;
+        let yOffset = 50;
+        
+        selectedPlayerData.forEach((player, index) => {
+            // Check if player is already on field
+            const existingCard = document.querySelector(`[data-player-id="${player.id}"]`);
+            if (existingCard && (existingCard.closest('#footballField') || existingCard.closest('.field-container'))) {
+                return; // Skip if already on field
+            }
+            
+            // Create field card
+            const fieldCard = this.createPlayerCard(player);
+            fieldCard.style.position = 'absolute';
+            fieldCard.style.left = `${xOffset + (index % 5) * 130}px`;
+            fieldCard.style.top = `${yOffset + Math.floor(index / 5) * 170}px`;
+            fieldCard.style.zIndex = '10';
+            
+            // Add delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-player-btn';
+            deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+            deleteBtn.title = 'Rimuovi dal campo';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.returnPlayerToPool(fieldCard);
+            });
+            fieldCard.appendChild(deleteBtn);
+            
+            fieldContainer.appendChild(fieldCard);
+        });
+        
+        // Update player pool to remove inserted players
+        this.renderPlayerPool();
+        
+        // Re-render grid view to remove inserted players from the grid
+        this.renderGridPlayers();
+        
+        // Show notification first
+        this.showGridNotification(`${selectedPlayerData.length} giocatori inseriti nel campo`);
+        
+        // Simulate click on the close button (X) to close the grid view
+        const closeButton = document.getElementById('gridModalClose');
+        if (closeButton) {
+            closeButton.click();
+        }
+    }
+
+    showGridNotification(message) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'grid-notification';
+        notification.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <span>${message}</span>
+        `;
+        
+        // Add notification styles
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            animation: slideInRight 0.3s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
     }
 }
 

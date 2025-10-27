@@ -97,6 +97,13 @@
                                 <span class="toggle-text">ON</span>
                             </button>
                         </div>
+                        <div class="form-group">
+                            <label for="gridViewBtn">Vista Griglia</label>
+                            <button id="gridViewBtn" class="btn btn-primary grid-view-btn" title="Apri vista griglia per selezione multipla">
+                                <i class="fas fa-th"></i>
+                                Grid View
+                            </button>
+                        </div>
                     </div>
                     <div class="player-pool" id="playerPool">
                         <!-- Player cards will be dynamically added here -->
@@ -552,6 +559,97 @@
                 <button type="button" class="btn btn-danger" id="confirmationConfirm">
                     <i class="fas fa-check"></i>
                     Sì, Conferma
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid View Modal -->
+    <div class="modal" id="gridViewModal">
+        <div class="modal-content grid-modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-th"></i> Vista Griglia Giocatori</h2>
+                <button type="button" class="btn-close" id="gridModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Grid Filters -->
+                <div class="grid-filters">
+                    <div class="filter-row">
+                        <div class="form-group">
+                            <label for="gridSquadFilter">Squadra</label>
+                            <select id="gridSquadFilter">
+                                <option value="">Tutte le squadre</option>
+                                <option value="alpak">Alpak</option>
+                                <option value="bigbro">Big Bro</option>
+                                <option value="boomers">Boomers</option>
+                                <option value="caesar">Caesar</option>
+                                <option value="circus">Circus</option>
+                                <option value="d power">D Power</option>
+                                <option value="fc zeta">FC Zeta</option>
+                                <option value="gear 7">Gear 7</option>
+                                <option value="stallions">Stallions</option>
+                                <option value="trm fc">TRM FC</option>
+                                <option value="underdogs fc">Underdogs FC</option>
+                                <option value="zebras fc">Zebras FC</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gridNameFilter">Nome</label>
+                            <input type="text" id="gridNameFilter" placeholder="Cerca giocatore...">
+                        </div>
+                        <div class="form-group">
+                            <label for="gridPositionFilter">Posizione</label>
+                            <select id="gridPositionFilter">
+                                <option value="">Tutte le posizioni</option>
+                                <option value="PORTIERE">PORTIERE</option>
+                                <option value="DIFENSORE">DIFENSORE</option>
+                                <option value="CENTROCAMPISTA">CENTROCAMPISTA</option>
+                                <option value="ATTACCANTE">ATTACCANTE</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gridRoleToggleBtn">Visualizza Ruoli</label>
+                            <button id="gridRoleToggleBtn" class="role-toggle-btn" title="Mostra/Nascondi ruoli dei giocatori">
+                                <i class="fas fa-eye"></i>
+                                <span class="toggle-text">ON</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Selection Info -->
+                <div class="selection-info">
+                    <span class="selection-count">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="selectedCount">0</span> giocatori selezionati
+                    </span>
+                    <div class="selection-actions">
+                        <button class="btn btn-sm btn-secondary" id="selectAllBtn">
+                            <i class="fas fa-check-double"></i>
+                            Seleziona tutto
+                        </button>
+                        <button class="btn btn-sm btn-secondary" id="clearSelectionBtn">
+                            <i class="fas fa-times"></i>
+                            Deseleziona tutto
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Grid Container -->
+                <div class="grid-container" id="gridContainer">
+                    <!-- Player cards will be dynamically added here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="gridModalCancel">
+                    <i class="fas fa-times"></i>
+                    Annulla
+                </button>
+                <button type="button" class="btn btn-primary" id="gridModalInsert">
+                    <i class="fas fa-plus"></i>
+                    Inserisci in campo (<span id="insertCount">0</span>)
                 </button>
             </div>
         </div>
