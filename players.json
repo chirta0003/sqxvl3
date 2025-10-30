@@ -1520,12 +1520,129 @@
       "wildcard": "SI",
       "created_at": "2024-12-19T12:00:00Z",
       "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_167",
+      "name": "Perucca",
+      "position": "PORTIERE",
+      "squad": "d power",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_168",
+      "name": "Andrei",
+      "position": "ATTACCANTE",
+      "squad": "trm fc",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_169",
+      "name": "Ramon",
+      "position": "CENTROCAMPISTA",
+      "squad": "fc zeta",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_170",
+      "name": "Mercuri",
+      "position": "PORTIERE",
+      "squad": "stallions",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_171",
+      "name": "Dell'Acqua",
+      "position": "DIFENSORE",
+      "squad": "stallions",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_172",
+      "name": "Cheddia",
+      "position": "CENTROCAMPISTA",
+      "squad": "circus",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_173",
+      "name": "Fabiani",
+      "position": "DIFENSORE",
+      "squad": "circus",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_174",
+      "name": "Napoletano",
+      "position": "ATTACCANTE",
+      "squad": "circus",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_175",
+      "name": "Giannace",
+      "position": "ATTACCANTE",
+      "squad": "circus",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_176",
+      "name": "Bonolis",
+      "position": "CENTROCAMPISTA",
+      "squad": "caesar",
+      "wildcard": "NO",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_177",
+      "name": "Esposito",
+      "position": "ATTACCANTE",
+      "squad": "caesar",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_178",
+      "name": "Alvarado",
+      "position": "ATTACCANTE",
+      "squad": "gear 7",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_179",
+      "name": "Cardamone",
+      "position": "DIFENSORE",
+      "squad": "gear 7",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
     }
   ],
   "metadata": {
     "version": "1.0",
     "last_updated": "2024-12-19T12:00:00Z",
-    "total_players": 169,
+    "total_players": 182,
     "squads": [
       "alpak",
       "bigbro",
