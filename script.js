@@ -2,6 +2,7 @@ class TeamManager {
     constructor() {
         this.draggedPlayer = null;
         this.dragOffset = null;
+        this.circleDisplayMode = false; // Track circle display mode
         this.init();
     }
 
@@ -369,6 +370,11 @@ class TeamManager {
         fieldCard.style.left = `${boundedX}px`;
         fieldCard.style.top = `${boundedY}px`;
         fieldCard.style.zIndex = '10';
+
+        // Apply circle mode if active
+        if (this.circleDisplayMode) {
+            fieldCard.classList.add('circle-mode');
+        }
 
         // Add click handler to return to pool with delete button
         const deleteBtn = document.createElement('button');
@@ -1080,6 +1086,16 @@ class TeamManager {
                 }
             });
         });
+
+        // Setup card display toggle
+        const cardDisplayToggle = document.getElementById('cardDisplayToggle');
+        if (cardDisplayToggle) {
+            cardDisplayToggle.addEventListener('click', () => {
+                this.circleDisplayMode = !this.circleDisplayMode;
+                this.updateCardDisplayMode();
+                this.updateCardDisplayToggleButton();
+            });
+        }
 
         // Setup canvas drawing functionality
         if (tacticalCanvas) {
@@ -2064,6 +2080,30 @@ class TeamManager {
 
         // Initialize history with empty state
         this.saveToHistory(tacticalCanvas);
+    }
+
+    updateCardDisplayMode() {
+        const fieldCards = document.querySelectorAll('#footballField .player-card');
+        fieldCards.forEach(card => {
+            if (this.circleDisplayMode) {
+                card.classList.add('circle-mode');
+            } else {
+                card.classList.remove('circle-mode');
+            }
+        });
+    }
+
+    updateCardDisplayToggleButton() {
+        const cardDisplayToggle = document.getElementById('cardDisplayToggle');
+        if (cardDisplayToggle) {
+            if (this.circleDisplayMode) {
+                cardDisplayToggle.classList.add('circle-mode');
+                cardDisplayToggle.textContent = 'Vista Normale';
+            } else {
+                cardDisplayToggle.classList.remove('circle-mode');
+                cardDisplayToggle.textContent = 'Vista Circolare';
+            }
+        }
     }
 
     makeDraggable(element) {
