@@ -1621,6 +1621,24 @@
       "updated_at": "2024-12-19T12:00:00Z"
     },
     {
+      "id": "player_183",
+      "name": "A.Vacca",
+      "position": "CENTROCAMPISTA",
+      "squad": "underdogs fc",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
+      "id": "player_184",
+      "name": "Kean",
+      "position": "ATTACCANTE",
+      "squad": "caesar",
+      "wildcard": "SI",
+      "created_at": "2024-12-19T12:00:00Z",
+      "updated_at": "2024-12-19T12:00:00Z"
+    },
+    {
       "id": "player_178",
       "name": "Alvarado",
       "position": "ATTACCANTE",
@@ -1642,7 +1660,7 @@
   "metadata": {
     "version": "1.0",
     "last_updated": "2024-12-19T12:00:00Z",
-    "total_players": 182,
+    "total_players": 184,
     "squads": [
       "alpak",
       "bigbro",
