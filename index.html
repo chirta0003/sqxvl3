@@ -2,14 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Football Team Manager</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Removed external Google Fonts to avoid preview network errors; using system-safe fallbacks -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="dark-theme">
     <div class="app-container">
+        <!-- WIP Ticker -->
+        <div class="wip-ticker-container">
+            <div class="wip-ticker-text">
+                🚧 WORK IN PROGRESS SPLIT 2 🚧 WORK IN PROGRESS SPLIT 2 🚧 WORK IN PROGRESS SPLIT 2 🚧 WORK IN PROGRESS SPLIT 2 🚧
+            </div>
+        </div>
+        <!-- Top Credit Bar -->
+        <div class="top-credit" aria-label="Created by Chri">Created by Chri</div>
         <!-- Header -->
         <header class="header">
             <div class="header-content">
@@ -26,9 +34,13 @@
                         <i class="fas fa-broom"></i>
                         Clear Field
                     </button>
+                    <button class="btn btn-secondary" id="ballBtn" title="Inserisci/Rimuovi palla">
+                        <i class="fas fa-futbol"></i>
+                        Ball
+                    </button>
                     <button class="btn btn-primary" id="playerManagementBtn">
                         <i class="fas fa-users"></i>
-                        Gestione Giocatori
+                        Aggiungi Giocatore
                     </button>
                 </div>
             </div>
