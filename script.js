@@ -759,7 +759,7 @@ class TeamManager {
             // All teams mode - show all available teams
             const allSquads = [
                 'alpak', 'bigbro', 'boomers', 'caesar', 'circus', 
-                'd power', 'fc zeta', 'gear 7', 'stallions', 
+                'd power', 'zeta como', 'gear 7', 'stallions', 
                 'trm fc', 'underdogs fc', 'zebras fc'
             ];
             
@@ -795,7 +795,8 @@ class TeamManager {
             'caesar': 'squad/caesar.png',
             'circus': 'squad/circus.png',
             'd power': 'squad/d power.png',
-            'fc zeta': 'squad/fc zeta.png',
+            'zeta como': 'squad/zeta como.png',
+            'fc zeta': 'squad/zeta como.png',
             'gear 7': 'squad/gear 7.png',
             'stallions': 'squad/stallions.png',
             'trm fc': 'squad/trm fc.png',
@@ -1620,7 +1621,7 @@ class TeamManager {
                 <option value="caesar">Caesar</option>
                 <option value="circus">Circus</option>
                 <option value="d power">D Power</option>
-                <option value="fc zeta">FC Zeta</option>
+                <option value="zeta como">Zeta Como</option>
                 <option value="gear 7">Gear 7</option>
                 <option value="stallions">Stallions</option>
                 <option value="trm fc">TRM FC</option>
@@ -2809,10 +2810,10 @@ class TeamManager {
         if (cardDisplayToggle) {
             if (this.circleDisplayMode) {
                 cardDisplayToggle.classList.add('circle-mode');
-                cardDisplayToggle.textContent = 'Vista Normale';
+                cardDisplayToggle.innerHTML = '<i class="fas fa-square"></i> Vista Normale';
             } else {
                 cardDisplayToggle.classList.remove('circle-mode');
-                cardDisplayToggle.textContent = 'Vista Circolare';
+                cardDisplayToggle.innerHTML = '<i class="fas fa-circle"></i> Vista Circolare';
             }
         }
     }
@@ -5442,7 +5443,7 @@ const INITIAL_PLAYERS_DATA = {
       "caesar",
       "circus",
       "d power",
-      "fc zeta",
+      "zeta como",
       "gear 7",
       "stallions",
       "trm fc",
@@ -5464,6 +5465,21 @@ class PlayerManager {
         await this.loadPlayers();
         this.setupEventListeners();
         this.renderPlayersTable();
+    }
+
+    normalizeSquadNames() {
+        let changed = false;
+        if (!Array.isArray(this.players)) return false;
+        this.players.forEach(p => {
+            if (typeof p.squad === 'string') {
+                const squad = p.squad.toLowerCase();
+                if (squad === 'fc zeta') {
+                    p.squad = 'zeta como';
+                    changed = true;
+                }
+            }
+        });
+        return changed;
     }
 
     setupEventListeners() {
@@ -5910,23 +5926,37 @@ class PlayerManager {
 
     async loadPlayers() {
         try {
-            // Try to load from localStorage first (user changes)
-            const saved = localStorage.getItem('footballPlayers');
-            if (saved) {
-                this.players = JSON.parse(saved);
-                console.log('Giocatori caricati da localStorage:', this.players.length);
-            } else {
-                // Fallback to initial data
-                console.log('Nessun dato in localStorage, carico dati iniziali...');
-                if (typeof INITIAL_PLAYERS_DATA !== 'undefined') {
-                    this.players = INITIAL_PLAYERS_DATA.players || [];
-                    console.log('Giocatori caricati da INITIAL_PLAYERS_DATA:', this.players.length);
-                    // Save to localStorage for future use
-                    this.savePlayers();
-                } else {
-                    console.error('INITIAL_PLAYERS_DATA non definito');
-                    this.players = [];
+            let loadedFromFile = false;
+            try {
+                const res = await fetch(this.jsonFilePath, { cache: 'no-store' });
+                if (res && res.ok) {
+                    const json = await res.json();
+                    this.players = Array.isArray(json) ? json : (json.players || []);
+                    loadedFromFile = true;
+                    console.log('Giocatori caricati da file players.json:', this.players.length);
                 }
+            } catch (e) {
+                console.warn('Impossibile caricare players.json, userò storage o dati iniziali:', e);
+            }
+            if (!loadedFromFile) {
+                const saved = localStorage.getItem('footballPlayers');
+                if (saved) {
+                    this.players = JSON.parse(saved);
+                    console.log('Giocatori caricati da localStorage:', this.players.length);
+                } else {
+                    console.log('Nessun dato in localStorage, carico dati iniziali...');
+                    if (typeof INITIAL_PLAYERS_DATA !== 'undefined') {
+                        this.players = INITIAL_PLAYERS_DATA.players || [];
+                        console.log('Giocatori caricati da INITIAL_PLAYERS_DATA:', this.players.length);
+                    } else {
+                        console.error('INITIAL_PLAYERS_DATA non definito');
+                        this.players = [];
+                    }
+                }
+            }
+            const changed = this.normalizeSquadNames();
+            if (loadedFromFile || changed) {
+                this.savePlayers();
             }
         } catch (error) {
             console.error('Errore nel caricamento giocatori:', error);
