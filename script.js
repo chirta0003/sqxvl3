@@ -5796,22 +5796,19 @@ class PlayerManager {
         const nameInput = document.getElementById('playerName');
         const positionSelect = document.getElementById('playerPosition');
         const squadSelect = document.getElementById('playerSquad');
-        const wildcardSelect = document.getElementById('playerWildcard');
 
         console.log('🚀 Form elements check:', {
             nameInput: !!nameInput,
             positionSelect: !!positionSelect,
-            squadSelect: !!squadSelect,
-            wildcardSelect: !!wildcardSelect
+            squadSelect: !!squadSelect
         });
 
         // Check if elements exist
-        if (!nameInput || !positionSelect || !squadSelect || !wildcardSelect) {
+        if (!nameInput || !positionSelect || !squadSelect) {
             console.error('❌ Form elements not found:', {
                 nameInput: !!nameInput,
                 positionSelect: !!positionSelect,
-                squadSelect: !!squadSelect,
-                wildcardSelect: !!wildcardSelect
+                squadSelect: !!squadSelect
             });
             this.showCustomAlert('Errore nel form: elementi mancanti', 'error');
             return;
@@ -5821,33 +5818,28 @@ class PlayerManager {
         const name = nameInput.value?.trim() || '';
         const position = positionSelect.value?.trim() || '';
         const squad = squadSelect.value?.trim() || '';
-        const wildcard = wildcardSelect.value?.trim() || 'NO';
 
         // Debug: log the actual values with more detail
         console.log('=== FORM DEBUG START ===');
         console.log('Form elements found:', {
             nameInput: !!nameInput,
             positionSelect: !!positionSelect,
-            squadSelect: !!squadSelect,
-            wildcardSelect: !!wildcardSelect
+            squadSelect: !!squadSelect
         });
         console.log('Raw form values:', {
             name: nameInput?.value,
             position: positionSelect?.value,
-            squad: squadSelect?.value,
-            wildcard: wildcardSelect?.value
+            squad: squadSelect?.value
         });
         console.log('Processed form values:', {
             name: name,
             position: position,
-            squad: squad,
-            wildcard: wildcard
+            squad: squad
         });
         console.log('Value lengths:', {
             nameLength: name.length,
             positionLength: position.length,
-            squadLength: squad.length,
-            wildcardLength: wildcard.length
+            squadLength: squad.length
         });
         console.log('=== FORM DEBUG END ===');
 
@@ -5896,8 +5888,7 @@ class PlayerManager {
         const playerData = {
             name: name,
             position: position,
-            squad: squad,
-            wildcard: wildcard
+            squad: squad
         };
 
         console.log('Validation passed, proceeding to save player:', playerData);
@@ -5958,7 +5949,6 @@ class PlayerManager {
         document.getElementById('playerName').value = player.name;
         document.getElementById('playerPosition').value = player.position;
         document.getElementById('playerSquad').value = player.squad;
-        document.getElementById('playerWildcard').value = player.wildcard || 'NO';
         document.getElementById('editingPlayerId').value = playerId;
 
         // Open modal for editing
