@@ -10,7 +10,7 @@ class TeamManager {
     }
 
     // Custom prompt function to replace browser prompt()
-    showTextInputModal(title, placeholder = '', defaultValue = '', showDelete = false, defaultColor = '#3b82f6', defaultSize = 16) {
+    showTextInputModal(title, placeholder = '', defaultValue = '', showDelete = false, defaultColor = '#F59E0B', defaultSize = 16) {
         return new Promise((resolve) => {
             const modal = document.getElementById('textInputModal');
             const overlay = document.getElementById('overlay');
@@ -246,7 +246,7 @@ class TeamManager {
         const path = document.createElementNS(svgNS, 'path');
         
         // Get current style settings
-        const strokeColor = document.getElementById('strokeColor')?.value || '#3b82f6';
+        const strokeColor = document.getElementById('strokeColor')?.value || '#F59E0B';
         const strokeWidth = document.getElementById('strokeWidth')?.value || '2';
         
         path.setAttribute('stroke', strokeColor);
@@ -317,8 +317,9 @@ class TeamManager {
         }
 
         // Calculate position based on mouse coordinates, centering the card under the cursor
-        const cardWidth = 120;
-        const cardHeight = 160;
+        // Adjust dimensions based on display mode
+        const cardWidth = this.circleDisplayMode ? 80 : 120;
+        const cardHeight = this.circleDisplayMode ? 80 : 160;
         
         // Center the card under the mouse cursor
         const x = e.clientX - fieldContainerRect.left - (cardWidth / 2);
@@ -336,6 +337,14 @@ class TeamManager {
             const topPct = (boundedY / fieldContainerRect.height) * 100;
             existingContainerCard.style.left = `${leftPct}%`;
             existingContainerCard.style.top = `${topPct}%`;
+            
+            // Ensure circle mode is consistent
+            if (this.circleDisplayMode) {
+                existingContainerCard.classList.add('circle-mode');
+            } else {
+                existingContainerCard.classList.remove('circle-mode');
+            }
+            
             this.draggedPlayer = null;
             this.dragOffset = null;
             return;
@@ -349,6 +358,11 @@ class TeamManager {
         containerCard.style.left = `${leftPct}%`;
         containerCard.style.top = `${topPct}%`;
         containerCard.style.zIndex = '10';
+
+        // Apply circle mode if active
+        if (this.circleDisplayMode) {
+            containerCard.classList.add('circle-mode');
+        }
 
         // Add click handler to return to pool with delete button
         const deleteBtn = document.createElement('button');
@@ -389,8 +403,10 @@ class TeamManager {
         const y = e.clientY - fieldRect.top - this.dragOffset.y;
 
         // Ensure the card stays within field boundaries
-        const cardWidth = 120; // Updated to match actual card width
-        const cardHeight = 160; // Updated to match actual card height
+        // Adjust dimensions based on display mode
+        const cardWidth = this.circleDisplayMode ? 80 : 120;
+        const cardHeight = this.circleDisplayMode ? 80 : 160;
+        
         const boundedX = Math.max(0, Math.min(x, fieldRect.width - cardWidth));
         const boundedY = Math.max(0, Math.min(y, fieldRect.height - cardHeight));
 
@@ -402,6 +418,14 @@ class TeamManager {
             const topPct = (boundedY / fieldRect.height) * 100;
             existingFieldCard.style.left = `${leftPct}%`;
             existingFieldCard.style.top = `${topPct}%`;
+            
+            // Ensure circle mode is consistent
+            if (this.circleDisplayMode) {
+                existingFieldCard.classList.add('circle-mode');
+            } else {
+                existingFieldCard.classList.remove('circle-mode');
+            }
+            
             this.draggedPlayer = null;
             this.dragOffset = null;
             return;
@@ -518,21 +542,54 @@ class TeamManager {
     clampAllCardPositions() {
         const clampInContainer = (container) => {
             if (!container) return;
-            const rectWidth = container.clientWidth;
-            const rectHeight = container.clientHeight;
+            
+            // Use getBoundingClientRect for sub-pixel precision of the container
+            const containerRect = container.getBoundingClientRect();
+            const rectWidth = containerRect.width;
+            const rectHeight = containerRect.height;
+            
+            // Get borders to accurately calculate relative position from absolute
+            const containerStyle = window.getComputedStyle(container);
+            const borderLeft = parseFloat(containerStyle.borderLeftWidth) || 0;
+            const borderTop = parseFloat(containerStyle.borderTopWidth) || 0;
+
             const cards = container.querySelectorAll('.player-card');
             cards.forEach(card => {
-                const cardWidth = card.offsetWidth || 120;
-                const cardHeight = card.offsetHeight || 160;
-                // Compute current pixel positions based on offset
-                const currentLeftPx = card.offsetLeft || 0;
-                const currentTopPx = card.offsetTop || 0;
+                // Get card dimensions with sub-pixel precision
+                const cardRect = card.getBoundingClientRect();
+                const cardWidth = cardRect.width;
+                const cardHeight = cardRect.height;
+
+                // Determine current position with high precision
+                // Prefer parsing style.left/top (percentage) to avoid Rounding-Read-Write loops (Drift)
+                let currentLeftPx, currentTopPx;
+
+                if (card.style.left && card.style.left.endsWith('%')) {
+                    currentLeftPx = (parseFloat(card.style.left) / 100) * rectWidth;
+                } else {
+                    // Fallback to calculated relative position using BCR (sub-pixel) instead of offsetLeft (integer)
+                    currentLeftPx = cardRect.left - containerRect.left - borderLeft + container.scrollLeft;
+                }
+
+                if (card.style.top && card.style.top.endsWith('%')) {
+                    currentTopPx = (parseFloat(card.style.top) / 100) * rectHeight;
+                } else {
+                    currentTopPx = cardRect.top - containerRect.top - borderTop + container.scrollTop;
+                }
+
                 const margin = 12;
-                const boundedX = Math.max(margin, Math.min(currentLeftPx, rectWidth - cardWidth - margin));
-                const boundedY = Math.max(margin, Math.min(currentTopPx, rectHeight - cardHeight - margin));
-                // Always store as percentages for responsiveness
+                // Calculate bounds
+                const maxLeft = rectWidth - cardWidth - margin;
+                const maxTop = rectHeight - cardHeight - margin;
+
+                // Clamp
+                const boundedX = Math.max(margin, Math.min(currentLeftPx, maxLeft));
+                const boundedY = Math.max(margin, Math.min(currentTopPx, maxTop));
+
+                // Write back as percentage
                 const leftPct = (boundedX / rectWidth) * 100;
                 const topPct = (boundedY / rectHeight) * 100;
+
                 card.style.left = `${leftPct}%`;
                 card.style.top = `${topPct}%`;
             });
@@ -893,8 +950,9 @@ class TeamManager {
             rafPending = false;
             if (!mouseDragging) return;
             const container = activeBoundsEl || document.getElementById('footballField') || document.querySelector('.field-container');
-            const cardWidth = card.offsetWidth || 120;
-            const cardHeight = card.offsetHeight || 160;
+            const isCircle = card.classList.contains('circle-mode');
+            const cardWidth = card.offsetWidth || (isCircle ? 80 : 120);
+            const cardHeight = card.offsetHeight || (isCircle ? 80 : 160);
             if (container) {
                 const rect = container.getBoundingClientRect();
                 const inside = lastMousePos.x >= rect.left && lastMousePos.x <= rect.right && lastMousePos.y >= rect.top && lastMousePos.y <= rect.bottom;
@@ -1037,8 +1095,10 @@ class TeamManager {
                 if (fieldEl) {
                     // Posizionamento relativo al campo
                     const fieldRect = fieldEl.getBoundingClientRect();
-                    const cardWidth = 120;
-                    const cardHeight = 160;
+                    // Adjust dimensions based on display mode
+                    const cardWidth = this.circleDisplayMode ? 80 : 120;
+                    const cardHeight = this.circleDisplayMode ? 80 : 160;
+                    
                     const x = e.clientX - fieldRect.left - (mouseOffset?.x || 0);
                     const y = e.clientY - fieldRect.top - (mouseOffset?.y || 0);
                     const margin = 12;
@@ -1094,8 +1154,10 @@ class TeamManager {
                 } else if (containerEl && !fieldEl) {
                     // Posizionamento relativo al container
                     const contRect = containerEl.getBoundingClientRect();
-                    const cardWidth = 120;
-                    const cardHeight = 160;
+                    // Adjust dimensions based on display mode
+                    const cardWidth = this.circleDisplayMode ? 80 : 120;
+                    const cardHeight = this.circleDisplayMode ? 80 : 160;
+                    
                     const x = e.clientX - contRect.left - (mouseOffset?.x || 0);
                     const y = e.clientY - contRect.top - (mouseOffset?.y || 0);
                     const margin = 6;
@@ -1121,6 +1183,13 @@ class TeamManager {
                     if (placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
                     containerEl.appendChild(card);
                     setTimeout(() => card.classList.remove('snap-animate'), 220);
+
+                    // Apply circle-mode if active
+                    if (this.circleDisplayMode) {
+                        card.classList.add('circle-mode');
+                    } else {
+                        card.classList.remove('circle-mode');
+                    }
 
                     // Aggiungi delete se mancante
                     if (!card.querySelector('.delete-player-btn')) {
@@ -1175,8 +1244,10 @@ class TeamManager {
                             e.clientY >= fr.top - magnetDist && e.clientY <= fr.bottom + magnetDist
                         );
                         if (nearField) {
-                            const cardWidth = 120;
-                            const cardHeight = 160;
+                            // Adjust dimensions based on display mode
+                            const cardWidth = this.circleDisplayMode ? 80 : 120;
+                            const cardHeight = this.circleDisplayMode ? 80 : 160;
+                            
                             const margin = 12;
                             const x = e.clientX - fr.left - (mouseOffset?.x || 0);
                             const y = e.clientY - fr.top - (mouseOffset?.y || 0);
@@ -1238,8 +1309,10 @@ class TeamManager {
                         // ma clampa la posizione attuale dentro i confini del campo per garantire libero posizionamento.
                         if (lastValidContainer.id === 'footballField') {
                             const fr = lastValidContainer.getBoundingClientRect();
-                            const cardWidth = card.offsetWidth || 120;
-                            const cardHeight = card.offsetHeight || 160;
+                            // Adjust dimensions based on display mode
+                            const cardWidth = this.circleDisplayMode ? 80 : 120;
+                            const cardHeight = this.circleDisplayMode ? 80 : 160;
+                            
                             const margin = 12;
                             const x = e.clientX - fr.left - (mouseOffset?.x || 0);
                             const y = e.clientY - fr.top - (mouseOffset?.y || 0);
@@ -1321,8 +1394,10 @@ class TeamManager {
                 const container = activeBoundsEl || document.getElementById('footballField') || document.querySelector('.field-container');
                 if (container) {
                     const rect = container.getBoundingClientRect();
-                    const cardWidth = 120;
-                    const cardHeight = 160;
+                    // Adjust dimensions based on display mode
+                    const cardWidth = this.circleDisplayMode ? 80 : 120;
+                    const cardHeight = this.circleDisplayMode ? 80 : 160;
+                    
                     const margin = 6;
                     const x = e.clientX - rect.left - (mouseOffset?.x || 0);
                     const y = e.clientY - rect.top - (mouseOffset?.y || 0);
@@ -1444,10 +1519,18 @@ class TeamManager {
             // Create ghost card for visual feedback
             ghostCard = card.cloneNode(true);
             ghostCard.className = 'drag-preview player-card touch-ghost';
+            
+            // Determine dimensions based on mode
+            const isCircleMode = card.classList.contains('circle-mode');
+            const ghostWidth = isCircleMode ? '80px' : '120px';
+            const ghostHeight = isCircleMode ? '80px' : '160px';
+            const ghostRadius = isCircleMode ? '50%' : '0.8rem';
+            
             ghostCard.style.cssText = `
                 position: fixed;
-                width: 120px;
-                height: 160px;
+                width: ${ghostWidth};
+                height: ${ghostHeight};
+                border-radius: ${ghostRadius};
                 transform: scale(0.9) rotate(5deg);
                 opacity: 0.8;
                 pointer-events: none;
@@ -2761,11 +2844,90 @@ class TeamManager {
 
     updateCardDisplayMode() {
         const fieldCards = document.querySelectorAll('#footballField .player-card, .field-container .player-card');
+        
+        // Store absolute visual anchor positions (Viewport Coordinates)
+        // This is the center of the team logo (or card center as fallback)
+        const cardAnchors = new Map();
+        
+        fieldCards.forEach(card => {
+            const logo = card.querySelector('.team-logo');
+            const target = logo && logo.offsetParent ? logo : card;
+            const rect = target.getBoundingClientRect();
+            
+            cardAnchors.set(card, {
+                vx: rect.left + rect.width / 2,
+                vy: rect.top + rect.height / 2
+            });
+        });
+
+        // Apply mode change
         fieldCards.forEach(card => {
             if (this.circleDisplayMode) {
                 card.classList.add('circle-mode');
             } else {
                 card.classList.remove('circle-mode');
+            }
+        });
+
+        // Adjust positions to keep visual anchors stable
+        fieldCards.forEach(card => {
+            const anchorViewport = cardAnchors.get(card);
+            if (anchorViewport) {
+                const parent = card.offsetParent || card.parentElement;
+                if (!parent) return;
+
+                // Use a clone to measure the target state dimensions precisely
+                const clone = card.cloneNode(true);
+                
+                // Configure clone to measure pure CSS layout dimensions
+                clone.style.visibility = 'hidden';
+                clone.style.transition = 'none';
+                clone.style.transform = 'none'; // Ensure no transforms affect measurement
+                clone.style.left = '0'; // Reset position to avoid layout influence
+                clone.style.top = '0';
+                clone.style.position = 'absolute';
+                
+                parent.appendChild(clone);
+                
+                // Measure offset of the anchor point relative to the clone's top-left border-box
+                const cloneRect = clone.getBoundingClientRect();
+                const cloneLogo = clone.querySelector('.team-logo');
+                const cloneTarget = cloneLogo && cloneLogo.offsetParent ? cloneLogo : clone;
+                const cloneTargetRect = cloneTarget.getBoundingClientRect();
+                
+                // Vector from Clone Top-Left to Anchor Center
+                const anchorOffsetX = (cloneTargetRect.left + cloneTargetRect.width / 2) - cloneRect.left;
+                const anchorOffsetY = (cloneTargetRect.top + cloneTargetRect.height / 2) - cloneRect.top;
+                
+                parent.removeChild(clone);
+                
+                // Calculate desired Top-Left of the card in Viewport coordinates
+                // DesiredCardViewport = AnchorViewport - InternalAnchorOffset
+                const desiredCardRectLeft = anchorViewport.vx - anchorOffsetX;
+                const desiredCardRectTop = anchorViewport.vy - anchorOffsetY;
+                
+                // Convert Viewport coordinates to Parent-Relative coordinates (for style.left/top)
+                // style.left/top are relative to the parent's padding-box content area
+                const parentRect = parent.getBoundingClientRect();
+                const parentBorderLeft = parseFloat(getComputedStyle(parent).borderLeftWidth) || 0;
+                const parentBorderTop = parseFloat(getComputedStyle(parent).borderTopWidth) || 0;
+                
+                // Position relative to parent's padding-box
+                // We add scrollTop/Left just in case parent is scrollable, though usually it's not for the field
+                const newLeftPx = desiredCardRectLeft - parentRect.left - parentBorderLeft + parent.scrollLeft;
+                const newTopPx = desiredCardRectTop - parentRect.top - parentBorderTop + parent.scrollTop;
+                
+                // Convert to percentage for responsive positioning
+                const parentWidth = parent.clientWidth;
+                const parentHeight = parent.clientHeight;
+                
+                if (parentWidth && parentHeight) {
+                    const leftPct = (newLeftPx / parentWidth) * 100;
+                    const topPct = (newTopPx / parentHeight) * 100;
+                    
+                    card.style.left = `${leftPct}%`;
+                    card.style.top = `${topPct}%`;
+                }
             }
         });
 
@@ -2882,7 +3044,7 @@ class TeamManager {
         let element;
         
         // Get current style settings
-        const strokeColor = document.getElementById('strokeColor')?.value || '#3b82f6';
+        const strokeColor = document.getElementById('strokeColor')?.value || '#F59E0B';
         const strokeWidth = document.getElementById('strokeWidth')?.value || '2';
         const fillColor = document.getElementById('fillColor')?.value || '#ffffff';
         const fillEnabled = document.getElementById('fillEnabled')?.checked || false;
@@ -2999,7 +3161,7 @@ class TeamManager {
         // Double click to edit text
         textElement.addEventListener('dblclick', async (e) => {
             e.stopPropagation();
-            const currentColor = textElement.getAttribute('fill') || '#3b82f6';
+            const currentColor = textElement.getAttribute('fill') || '#F59E0B';
             const currentSize = parseInt(textElement.getAttribute('font-size')) || 16;
             const result = await this.showTextInputModal('Modifica il testo:', 'Scrivi qui il testo...', textElement.textContent, true, currentColor, currentSize);
             
@@ -3657,8 +3819,8 @@ class TeamManager {
             const plannedX = xOffset + (index % 5) * 130;
             const plannedY = yOffset + Math.floor(index / 5) * 170;
             // Clamp within container
-            const cardWidth = 120;
-            const cardHeight = 160;
+            const cardWidth = this.circleDisplayMode ? 80 : 120;
+            const cardHeight = this.circleDisplayMode ? 80 : 160;
             const boundedX = Math.max(0, Math.min(plannedX, containerRect.width - cardWidth));
             const boundedY = Math.max(0, Math.min(plannedY, containerRect.height - cardHeight));
             // Apply percentage-based position
